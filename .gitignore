@@ -1,0 +1,16 @@
+# Executables
+*.exe
+*.out
+*.app
+
+### Vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+### Project Files ###
+build/
+django_setup_venv/
