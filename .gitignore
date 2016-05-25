@@ -13,4 +13,4 @@ Session.vim
 
 ### Project Files ###
 build/
-django_setup_venv/
+mbs_venv/
