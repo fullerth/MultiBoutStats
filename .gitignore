@@ -4,7 +4,6 @@
 *.app
 
 ### Python ###
-### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -17,6 +16,9 @@ __pycache__/
 Session.vim
 .netrwhist
 *~
+
+### Django ###
+db.sqlite3
 
 ### Project Files ###
 build/
