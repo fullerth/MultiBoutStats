@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 def view_stat_list(request):
-    return HttpResponse()
+    context = {}
+    return render(request, 'wftda_importer/stat_display.html', context)
     
