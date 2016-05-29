@@ -22,4 +22,5 @@ db.sqlite3
 
 ### Project Files ###
 build/
+source/functional_tests/screendumps/
 mbs_venv/
