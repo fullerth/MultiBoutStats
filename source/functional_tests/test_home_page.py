@@ -6,10 +6,14 @@ class HomePageExists(FunctionalTest):
     '''Open up a page and it's got stats for Jill Nye across multiple available
 bouts
     '''
+    def setUp(self):
+        self.url_prefix = '/display_stats/'
+        super().setUp()
+
     def test_multi_bout_stats_title(self):
         '''Make sure that the correct title is displayed'''
         url = [self.server_url,
-               '/display_stats/'
+               self.url_prefix,
               ]
         self.browser.get(''.join(url))
 
@@ -24,7 +28,7 @@ bouts
         p.save()
 
         url = [self.server_url,
-                '/display_stats/%(id)'.format({"id":p.id})
+                '{0}/{1}/'.format(self.url_prefix, p.id)
               ]
 
         self.browser.get(''.join(url))
