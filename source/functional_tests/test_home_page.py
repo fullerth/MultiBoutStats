@@ -9,7 +9,7 @@ bouts
     def test_multi_bout_stats_title(self):
         '''Make sure that the correct title is displayed'''
         url = [self.server_url,
-               '/'
+               '/display_stats/'
               ]
         self.browser.get(''.join(url))
 
@@ -24,7 +24,7 @@ bouts
         p.save()
 
         url = [self.server_url,
-                '/%(id)'.format({"id":p.id})
+                '/display_stats/%(id)'.format({"id":p.id})
               ]
 
         self.browser.get(''.join(url))
