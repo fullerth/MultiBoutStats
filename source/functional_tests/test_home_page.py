@@ -7,7 +7,7 @@ class HomePageExists(FunctionalTest):
 bouts
     """
     def setUp(self):
-        self.url_prefix = '/display_stats/'
+        self.url_prefix = '/display_stats'
         super().setUp()
 
     def test_multi_bout_stats_title(self):
@@ -21,17 +21,18 @@ bouts
 
     def test_multi_bout_stats_shows_bouts(self):
         """Ensure that the correct name shows up in the stat detail page"""
-        expected_name = "Holly Botts"
+        expected_name = "Jill Nye"
         p = Player()
         p.name = expected_name
         p.save()
 
         url = [self.server_url,
-                '{0}/{1}/'.format(self.url_prefix, p.id)
+                '{0}/{1}'.format(self.url_prefix, p.id)
               ]
+        print(''.join(url))
 
         self.browser.get(''.join(url))
 
-        self.assertIn("Stats for Holly Botts", self.browser.title)
+        self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
 
         
