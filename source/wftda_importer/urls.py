@@ -19,4 +19,5 @@ from wftda_importer.views import view_stat_list
 
 urlpatterns = [
     url(r'^$', view_stat_list, name="display_stats"),
+    url(r'^(?P<player_id>\d+)/$', view_stat_list, name="stat_detail"),
 ]
