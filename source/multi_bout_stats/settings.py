@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wftda_importer'
+    'wftda_importer',
+    'display_stats',
 ]
 
 MIDDLEWARE_CLASSES = [

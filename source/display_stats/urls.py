@@ -1,4 +1,4 @@
-"""multi_bout_stats URL Configuration
+"""Display Stats URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
@@ -13,10 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
+
+from display_stats.views import view_stat_list
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^display_stats/', include('display_stats.urls'))
+    url(r'^$', view_stat_list, name="display_stats"),
+    url(r'^(?P<player_id>\d+)/$', view_stat_list, name="stat_detail"),
 ]
