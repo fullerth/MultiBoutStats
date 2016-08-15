@@ -16,6 +16,7 @@ __pycache__/
 Session.vim
 .netrwhist
 *~
+tags
 
 ### Django ###
 db.sqlite3
