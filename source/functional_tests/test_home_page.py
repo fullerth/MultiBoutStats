@@ -43,7 +43,10 @@ bouts
         p = Player.objects.create() 
         
         for i in range(0, expected_jams):
-            Jam.objects.create()
+            j = Jam.objects.create()
+            j.save()
+            j.players.add(p)
+            j.save()
         
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)

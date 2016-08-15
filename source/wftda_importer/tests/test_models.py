@@ -10,4 +10,9 @@ class PlayerTests(TestCase):
         p = Player(name="Thump R. Dickhoff")
 
 class JamTests(TestCase):
-    pass
+    def test_model_can_store_players(self):
+        p = Player.objects.create()
+        j = Jam.objects.create()
+        j.players.add(p)
+
+        

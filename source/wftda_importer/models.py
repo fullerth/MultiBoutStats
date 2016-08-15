@@ -4,4 +4,4 @@ class Player(models.Model):
     name = models.CharField(max_length=50, null=True)
 
 class Jam(models.Model):
-    pass
+    players = models.ManyToManyField(Player)
