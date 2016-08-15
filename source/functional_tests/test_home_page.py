@@ -2,7 +2,7 @@ from .base import FunctionalTest
 
 from wftda_importer.models import Player
 
-class HomePageExists(FunctionalTest):
+class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
 bouts
     """
@@ -37,4 +37,16 @@ bouts
         self.browser.get(''.join(url))
         self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
 
+    def test_lead_jammer_percentage(self):
+        """Ensure the lead jammer percentage is displayed"""
+        expected_percentage = 43.684
+        p = Player.objects.create() 
         
+        url = [self.server_url,
+                '{0}/{1}'.format(self.url_prefix, p.id)
+              ]
+
+        self.browser.get(''.join(url))
+        self.assertTrue(str(expected_percentage) in self.browser.page_source)
+
+
