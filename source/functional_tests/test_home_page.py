@@ -1,6 +1,6 @@
 from .base import FunctionalTest
 
-from wftda_importer.models import Player
+from wftda_importer.models import Player, Jam
 
 class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
@@ -41,6 +41,9 @@ bouts
         """Ensure the number of jams played is displayed properly"""
         expected_jams = 12
         p = Player.objects.create() 
+        
+        for i in range(0, expected_jams):
+            Jam.objects.create()
         
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)
