@@ -16,7 +16,7 @@ class StatDisplayPageTest(TestCase):
 
         c = Client()
         response = c.get(reverse('display_stats'))
-        self.assertTemplateUsed(response, 'wftda_importer/stat_display.html')
+        self.assertTemplateUsed(response, 'display_stats/display_stats.html')
 
     def test_stat_page_passes_name_in_context(self):
         """Ensure name:Player.name is passed in the detail page context"""
