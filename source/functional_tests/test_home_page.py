@@ -37,9 +37,9 @@ bouts
         self.browser.get(''.join(url))
         self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
 
-    def test_lead_jammer_percentage(self):
-        """Ensure the lead jammer percentage is displayed"""
-        expected_percentage = 43.684
+    def test_jams_played_displayed_correctly(self):
+        """Ensure the number of jams played is displayed properly"""
+        expected_jams = 12
         p = Player.objects.create() 
         
         url = [self.server_url,
@@ -47,6 +47,12 @@ bouts
               ]
 
         self.browser.get(''.join(url))
-        self.assertTrue(str(expected_percentage) in self.browser.page_source)
+        expected_strs = ['jams: {0}'.format(expected_jams),
+                ]
+        for expected in expected_strs:
+            self.assertIn(expected,
+                    self.browser.page_source, 
+                    msg="'{0}' not found on page".format(expected)
+            )
 
 

@@ -40,7 +40,6 @@ class FunctionalTest(LiveServerTestCase):
 
         self.browser = webdriver.Firefox()
         self.enable_implicit_wait()
-        
 
     def tearDown(self):
         if self._test_has_failed():
