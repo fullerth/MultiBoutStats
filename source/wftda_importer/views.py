@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django import forms
 
 class WftdaImporterForm(forms.Form):
-    f = forms.FileField()
+    file_input = forms.FileField()
 
 def view_wftda_importer(request):
     if request.method == 'POST':
