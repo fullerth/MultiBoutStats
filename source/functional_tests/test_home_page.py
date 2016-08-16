@@ -39,7 +39,7 @@ bouts
 
     def test_jams_played_displayed_correctly(self):
         """Ensure the number of jams played is displayed properly"""
-        expected_jams = 12
+        expected_jams = 16
         p = Player.objects.create() 
         
         for i in range(0, expected_jams):

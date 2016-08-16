@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from wftda_importer.models import Player
+from wftda_importer.models import Player, Jam
 
 class StatDisplayPageTest(TestCase):
     def setUp(self):
@@ -28,4 +28,20 @@ class StatDisplayPageTest(TestCase):
         c = Client()
         response = c.get(reverse(self.test_url))
         self.assertEqual(expected_name, response.context['name'])
+
+    def test_stat_page_passes_num_jams_in_context(self):
+        """Ensure num_jams contains the correct total jams for a player"""
+        expected_jams = 5
+
+        p = Player.objects.create()
+
+        for i in range(0, expected_jams):
+            j = Jam.objects.create()
+            j.players.add(p)
+            j.save()
+
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(expected_jams, response.context['num_jams'])
+        
 

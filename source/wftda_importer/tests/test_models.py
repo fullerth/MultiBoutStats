@@ -16,8 +16,10 @@ class PlayerTests(TestCase):
 
 class JamTests(TestCase):
     def test_model_can_store_players(self):
-        p = Player.objects.create()
+        p1 = Player.objects.create()
+        p2 = Player.objects.create()
         j = Jam.objects.create()
-        j.players.add(p)
+        j.players.add(p1)
+        j.players.add(p2)
 
         
