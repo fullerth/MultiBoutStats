@@ -9,6 +9,11 @@ class PlayerTests(TestCase):
     def test_model_can_store_name(self):
         p = Player(name="Thump R. Dickhoff")
 
+    def test_model_str_method(self):
+        expected_repr = "Cassie Beck"
+        p = Player.objects.create(name="Cassie Beck")
+        self.assertEqual(expected_repr, str(p))
+
 class JamTests(TestCase):
     def test_model_can_store_players(self):
         p = Player.objects.create()
