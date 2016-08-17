@@ -40,13 +40,15 @@ bouts
     def test_jams_played_displayed_correctly(self):
         """Ensure the number of jams played is displayed properly"""
         expected_jams = 16
+        total_jams = 20
         p = Player.objects.create() 
         
-        for i in range(0, expected_jams):
+        for i in range(0, total_jams):
             j = Jam.objects.create()
             j.save()
-            j.players.add(p)
-            j.save()
+            if(i < expected_jams):
+                j.players.add(p)
+                j.save()
         
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)
@@ -79,6 +81,5 @@ bouts
 
         self.assertIn(str(expected_jams), total_jams.get_attribute('innerHTML'), 
                 msg="Total number of jams not found on page")
-
 
 
