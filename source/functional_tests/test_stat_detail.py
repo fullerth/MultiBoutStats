@@ -61,5 +61,24 @@ bouts
                     msg="'{0}' not found on page".format(expected)
             )
 
+    def test_total_jams_displayed(self):
+        """Ensure the total number of jams is displayed on the page"""
+        expected_jams = 20
+        p = Player.objects.create()
+        
+        for i in range(0, expected_jams):
+            Jam.objects.create()
+
+        url = [self.server_url,
+                '{0}/{1}'.format(self.url_prefix, p.id)
+              ]
+
+        self.browser.get(''.join(url))
+
+        total_jams = self.browser.find_element_by_id('id_total_jams')
+
+        self.assertIn(str(expected_jams), total_jams.get_attribute('innerHTML'), 
+                msg="Total number of jams not found on page")
+
 
 

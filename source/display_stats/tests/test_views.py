@@ -43,5 +43,16 @@ class StatDisplayPageTest(TestCase):
         c = Client()
         response = c.get(reverse(self.test_url))
         self.assertEqual(expected_jams, response.context['num_jams'])
-        
 
+    def test_stat_page_passes_total_jams_in_context(self):
+        """Ensure total_jams contains the correct total available jams"""
+        expected_jams = 10
+
+        p = Player.objects.create()
+
+        for i in range(0, expected_jams):
+            j = Jam.objects.create()
+        
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(expected_jams, response.context['total_jams'])
