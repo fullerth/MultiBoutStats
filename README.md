@@ -1,6 +1,8 @@
 # Overview
 Project to display player stats across multiple bouts.
 
+Currently displaying the number of jams participated in.
+
 # Required packages
 Pyvirtualdisplay requires `xvfb`
 
