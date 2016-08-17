@@ -17,7 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from wftda_importer.views import view_wftda_importer
+from wftda_importer.views import WftdaImporterFormView
 
 urlpatterns = [
-    url(r'^$', view_wftda_importer, name="wftda_importer"),
+    url(r'^$', WftdaImporterFormView.as_view(), name="wftda_importer"),
 ]

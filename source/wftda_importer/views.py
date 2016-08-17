@@ -1,19 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.views.generic import FormView
 
 from django import forms
 
 class WftdaImporterForm(forms.Form):
     file_input = forms.FileField()
 
-def view_wftda_importer(request):
-    if request.method == 'POST':
-        form = WftdaImporterForm(request.POST, request.FILES)
-        if form.is_valid():
-            return HttpResponseRedirect('/display_stats')
-    else:
-        form = WftdaImporterForm()
+class WftdaImporterFormView(FormView):
+    template_name = 'wftda_importer/import.html'
+    form_class = WftdaImporterForm
+    success_url = '/display_stats'
 
-    context = {'form':form}
-    return(render(request, 'wftda_importer/import.html', context))
+    def form_valid(self, form):
+        print("VALID FORM DATA, now do something with it")
+        return super(WftdaImporterFormView, self).form_valid(form)
+
 
