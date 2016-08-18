@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from wftda_importer.models import Player, Jam
+from wftda_importer.models import Player, Jam, PlayerToJam
 
 class PlayerTests(TestCase):
     def setUp(self):
@@ -22,5 +22,12 @@ class JamTests(TestCase):
         j = Jam.objects.create()
         j.players.add(p1)
         j.players.add(p2)
+
+class PlayerToJamTests(TestCase):
+    def test_model_has_player_and_Jam_foreign_keys(self):
+        p = Player.objects.create()
+        j = Jam.objects.create()
+
+        PlayerToJam(player=p, jam=j)
 
         

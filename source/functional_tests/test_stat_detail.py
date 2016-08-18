@@ -1,6 +1,6 @@
 from .base import FunctionalTest
 
-from wftda_importer.models import Player, Jam
+from wftda_importer.models import Player, Jam, PlayerToJam
 
 class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
@@ -82,4 +82,16 @@ bouts
         self.assertIn(str(expected_jams), total_jams.get_attribute('innerHTML'), 
                 msg="Total number of jams not found on page")
 
+    def test_number_jams_as_blocker_displayed(self):
+        """Ensure the number of jams played as a blocker are displayed"""
+        expected_jams = 5
+        total_jams = 10
+        p = Player.objects.create()
+
+        for i in range(0, total_jams):
+            j = Jam.objects.create()
+            PlayerToJam.objects.create(player=p, jam=j)
+
+        self.fail("finish this test")
+            
 

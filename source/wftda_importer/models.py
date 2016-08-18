@@ -9,3 +9,6 @@ class Player(models.Model):
 class Jam(models.Model):
     players = models.ManyToManyField(Player)
 
+class PlayerToJam(models.Model):
+    player = models.ForeignKey(Player, null=True)
+    jam = models.ForeignKey(Jam, null=True)
