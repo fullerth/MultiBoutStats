@@ -7,8 +7,8 @@ class Player(models.Model):
         return("{0}".format(self.name))
 
 class Jam(models.Model):
-    players = models.ManyToManyField(Player)
+    players = models.ManyToManyField(Player, through='PlayerToJam')
 
 class PlayerToJam(models.Model):
-    player = models.ForeignKey(Player, null=True)
-    jam = models.ForeignKey(Jam, null=True)
+    player = models.ForeignKey('Player', null=True)
+    jam = models.ForeignKey('Jam', null=True)

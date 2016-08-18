@@ -47,8 +47,7 @@ bouts
             j = Jam.objects.create()
             j.save()
             if(i < expected_jams):
-                j.players.add(p)
-                j.save()
+                PlayerToJam.objects.create(player=p, jam=j)
         
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)
@@ -90,8 +89,17 @@ bouts
 
         for i in range(0, total_jams):
             j = Jam.objects.create()
-            PlayerToJam.objects.create(player=p, jam=j)
+            if(i < expected_jams):
+                PlayerToJam.objects.create(player=p, jam=j)
 
-        self.fail("finish this test")
-            
+        url = [self.server_url,
+                '{0}/{1}'.format(self.url_prefix, p.id)
+              ]
+
+        self.browser.get(''.join(url))
+
+        blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
+
+        self.assertIn(str(expected_jams), blocker_jams.get_attribute('innerHTML'),
+                msg="Number of Jams as blocker not found in id_blocker_jams")
 

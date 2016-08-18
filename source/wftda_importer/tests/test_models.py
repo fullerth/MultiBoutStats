@@ -20,8 +20,8 @@ class JamTests(TestCase):
         p1 = Player.objects.create()
         p2 = Player.objects.create()
         j = Jam.objects.create()
-        j.players.add(p1)
-        j.players.add(p2)
+        PlayerToJam.objects.create(player=p1, jam=j)
+        PlayerToJam.objects.create(player=p2, jam=j)
 
 class PlayerToJamTests(TestCase):
     def test_model_has_player_and_Jam_foreign_keys(self):
