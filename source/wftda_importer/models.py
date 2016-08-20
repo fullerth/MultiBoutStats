@@ -10,5 +10,14 @@ class Jam(models.Model):
     players = models.ManyToManyField(Player, through='PlayerToJam')
 
 class PlayerToJam(models.Model):
+    BLOCKER = 'B'
+    JAMMER = 'J'
+    PIVOT = 'P'
+    POSITIONS = (
+        (BLOCKER, 'Blocker'),
+        (JAMMER, 'Jammer'),
+        (PIVOT, 'Pivot'),
+    )
     player = models.ForeignKey('Player', null=True)
     jam = models.ForeignKey('Jam', null=True)
+    position = models.CharField(max_length=1, choices=POSITIONS)

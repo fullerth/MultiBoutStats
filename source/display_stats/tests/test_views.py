@@ -56,14 +56,37 @@ class StatDisplayPageTest(TestCase):
         response = c.get(reverse(self.test_url))
         self.assertEqual(expected_jams, response.context['total_jams'])
 
-    def test_stat_page_passes_blocker_jams_in_context(self):
-        """Ensure blocker_jams contains the correct jams blocked by the player"""
-        expected_jams = 12
+    def test_stat_page_passes_correct_jam_position_counts_in_context(self):
+        """Ensure context contains the correct jam positions by the player"""
+        expected_blocking = 4
+        expected_jamming = 6
+        expected_pivot = 3
+        total_jams = expected_blocking + expected_jamming + expected_pivot
 
         p = Player.objects.create()
 
-        for i in range(0, expected_jams):
+        for i in range(0, total_jams):
             j = Jam.objects.create()
-            PlayerToJam.objects.create(player = p, jam = j)
+            if(i < expected_blocking):
+                PlayerToJam.objects.create(player = p, jam = j, 
+                        position = PlayerToJam.BLOCKER)
+                print("Made a blocker")
+            elif(i < (expected_blocking+expected_jamming)):
+                PlayerToJam.objects.create(player = p, jam = j, 
+                        position = PlayerToJam.JAMMER)
+                print("Made a jammer")
+            elif(i < (expected_blocking+expected_jamming+expected_pivot)):
+                PlayerToJam.objects.create(player = p, jam = j,
+                        position = PlayerToJam.PIVOT)
+                print("Made a pivot")
 
+
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(expected_blocking, response.context['blocker_jams'],
+                msg="Incorrect blocking jams reported")
+        self.assertEqual(expected_jamming, response.context['jammer_jams'],
+                msg="Incorrect jamming jams reported")
+        self.assertEqual(expected_pivot, response.context['pivot_jams'],
+                msg="Incorrect pivot jams reported")
 

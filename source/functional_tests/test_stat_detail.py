@@ -90,7 +90,8 @@ bouts
         for i in range(0, total_jams):
             j = Jam.objects.create()
             if(i < expected_jams):
-                PlayerToJam.objects.create(player=p, jam=j)
+                PlayerToJam.objects.create(player=p, jam=j,
+                        position=PlayerToJam.BLOCKER)
 
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)
