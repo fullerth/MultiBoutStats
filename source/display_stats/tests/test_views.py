@@ -70,15 +70,12 @@ class StatDisplayPageTest(TestCase):
             if(i < expected_blocking):
                 PlayerToJam.objects.create(player = p, jam = j, 
                         position = PlayerToJam.BLOCKER)
-                print("Made a blocker")
             elif(i < (expected_blocking+expected_jamming)):
                 PlayerToJam.objects.create(player = p, jam = j, 
                         position = PlayerToJam.JAMMER)
-                print("Made a jammer")
             elif(i < (expected_blocking+expected_jamming+expected_pivot)):
                 PlayerToJam.objects.create(player = p, jam = j,
                         position = PlayerToJam.PIVOT)
-                print("Made a pivot")
 
 
         c = Client()

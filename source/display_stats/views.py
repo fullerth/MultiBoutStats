@@ -12,7 +12,6 @@ def view_stat_list(request, player_id=1):
             position=PlayerToJam.JAMMER).count()
     pivot_jams = PlayerToJam.objects.filter(
             position=PlayerToJam.PIVOT).count()
-    print("block: {0}, jam: {1}, pivot: {2}".format(blocker_jams, jammer_jams, pivot_jams))
     context = {'name':p.name, 'num_jams': num_jams, 'total_jams': total_jams,
                'blocker_jams': blocker_jams, 'jammer_jams': jammer_jams, 
                'pivot_jams': pivot_jams
