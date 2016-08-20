@@ -81,17 +81,25 @@ bouts
         self.assertIn(str(expected_jams), total_jams.get_attribute('innerHTML'), 
                 msg="Total number of jams not found on page")
 
-    def test_number_jams_as_blocker_displayed(self):
+    def test_positions_displayed_correctly(self):
         """Ensure the number of jams played as a blocker are displayed"""
-        expected_jams = 5
-        total_jams = 10
+        expected_jammer = 8
+        expected_blocker = 5
+        expected_pivot = 3
+        total_jams = expected_jammer + expected_blocker + expected_pivot 
         p = Player.objects.create()
 
         for i in range(0, total_jams):
             j = Jam.objects.create()
-            if(i < expected_jams):
+            if(i < expected_jammer):
+                PlayerToJam.objects.create(player=p, jam=j,
+                        position=PlayerToJam.JAMMER)
+            elif(i < (expected_jammer + expected_blocker)):
                 PlayerToJam.objects.create(player=p, jam=j,
                         position=PlayerToJam.BLOCKER)
+            elif(i < (expected_jammer + expected_blocker + expected_pivot)):
+                PlayerToJam.objects.create(player=p, jam=j,
+                        position=PlayerToJam.PIVOT)
 
         url = [self.server_url,
                 '{0}/{1}'.format(self.url_prefix, p.id)
@@ -99,8 +107,17 @@ bouts
 
         self.browser.get(''.join(url))
 
+        jammer_jams = self.browser.find_element_by_id('id_jammer_jams')
         blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
+        pivot_jams = self.browser.find_element_by_id('id_pivot_jams')
 
-        self.assertIn(str(expected_jams), blocker_jams.get_attribute('innerHTML'),
+        self.assertIn(str(expected_jammer), 
+                jammer_jams.get_attribute('innerHTML'),
+                msg="Number of Jams as blocker not found in id_jammer_jams")
+        self.assertIn(str(expected_blocker), 
+                blocker_jams.get_attribute('innerHTML'),
                 msg="Number of Jams as blocker not found in id_blocker_jams")
+        self.assertIn(str(expected_pivot), 
+                pivot_jams.get_attribute('innerHTML'),
+                msg="Number of Jams as blocker not found in id_pivot_jams")
 
