@@ -10,6 +10,9 @@ bouts
 
     def setUp(self):
         self.url_prefix = '/display_stats'
+        self.url = [self.server_url,
+                    self.url_prefix,
+                   ]
         super().setUp()
 
     def test_landing_page_title(self):
@@ -17,10 +20,7 @@ bouts
         expected_name = "Jill Nye"
         p = Player.objects.create(pk=1, name=expected_name)
 
-        url = [self.server_url,
-               self.url_prefix,
-              ]
-        self.browser.get(''.join(url))
+        self.browser.get(''.join(self.url))
 
         self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
 
@@ -30,11 +30,9 @@ bouts
         p1 = Player.objects.create()
         p2 = Player.objects.create(name=expected_name)
 
-        url = [self.server_url,
-                '{0}/{1}'.format(self.url_prefix, p2.id)
-              ]
+        self.url.append('/{0}'.format(p2.id))
 
-        self.browser.get(''.join(url))
+        self.browser.get(''.join(self.url))
         self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
 
     def test_jams_played_displayed_correctly(self):
@@ -49,11 +47,10 @@ bouts
             if(i < expected_jams):
                 PlayerToJam.objects.create(player=p, jam=j)
         
-        url = [self.server_url,
-                '{0}/{1}'.format(self.url_prefix, p.id)
-              ]
+        self.url.append('/{0}'.format(p.id))
+              
 
-        self.browser.get(''.join(url))
+        self.browser.get(''.join(self.url))
         expected_strs = ['jams: {0}'.format(expected_jams),
                 ]
         for expected in expected_strs:
@@ -70,11 +67,9 @@ bouts
         for i in range(0, expected_jams):
             Jam.objects.create()
 
-        url = [self.server_url,
-                '{0}/{1}'.format(self.url_prefix, p.id)
-              ]
+        self.url.append('/{0}'.format(p.id))
 
-        self.browser.get(''.join(url))
+        self.browser.get(''.join(self.url))
 
         total_jams = self.browser.find_element_by_id('id_total_jams')
 
@@ -101,11 +96,9 @@ bouts
                 PlayerToJam.objects.create(player=p, jam=j,
                         position=PlayerToJam.PIVOT)
 
-        url = [self.server_url,
-                '{0}/{1}'.format(self.url_prefix, p.id)
-              ]
+        self.url.append('/{0}'.format(p.id))
 
-        self.browser.get(''.join(url))
+        self.browser.get(''.join(self.url))
 
         jammer_jams = self.browser.find_element_by_id('id_jammer_jams')
         blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
