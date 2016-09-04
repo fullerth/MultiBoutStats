@@ -86,10 +86,7 @@ bouts
 
         self.__create_jams(total_jams)
 
-        self.__put_player_in_jams(player=p, blocker=16)
-        
-#        for i in range(0, expected_jams):
-#            PlayerToJam.objects.create(player=p, jam=self.created_jams[i])
+        self.__put_player_in_jams(player=p, blocker=expected_jams)
         
         self.url.append('/{0}'.format(p.id))
         self.browser.get(''.join(self.url))
