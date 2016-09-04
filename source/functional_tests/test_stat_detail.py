@@ -16,6 +16,7 @@ bouts
         self.expected_players = [{"name":"Jill Nye", 'pk':1}]
         self.created_players = []
         self.__create_players(new_players=self.expected_players)
+        self.expected_elements = []
         super().setUp()
 
     def __create_players(self, new_players=[{"name":"Default",
@@ -25,14 +26,21 @@ bouts
         for current_player in new_players:
             self.created_players.append(Player.objects.create(**current_player))
 
+    def __verify_expected_elements(self):
+        for test in self.expected_elements:
+            self.assertIn(test['string'], test['location'])
+
 
     def test_landing_page_title(self):
         """Make sure that the correct title is displayed on the landing page"""
-        expected_string = "Stats for {0}".format(self.created_players[0].name)
-
         self.browser.get(''.join(self.url))
 
-        self.assertIn(expected_string, self.browser.title)
+        self.expected_elements.append({
+            "string":"Stats for {0}".format(self.created_players[0].name), 
+            "location":self.browser.title})
+
+        self.__verify_expected_elements()
+
 
     def test_detail_page_title(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
