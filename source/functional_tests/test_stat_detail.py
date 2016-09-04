@@ -13,7 +13,11 @@ bouts
         self.url = [self.server_url,
                     self.url_prefix,
                    ]
-        self.expected_players = [{"name":"Jill Nye", 'pk':1}]
+        self.expected_players = [
+            {"name":"Jill Nye", 'pk':1}, 
+            {"name":"Cassie Beck", "pk":2}
+        ]
+
         self.created_players = []
         self.__create_players(new_players=self.expected_players)
         self.expected_elements = []
@@ -44,38 +48,38 @@ bouts
 
     def test_detail_page_title(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
-        expected_name = "Holly Botts"
-        p1 = Player.objects.create()
-        p2 = Player.objects.create(name=expected_name)
+        p2 = self.created_players[1]
 
         self.url.append('/{0}'.format(p2.id))
 
         self.browser.get(''.join(self.url))
-        self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
+
+        self.expected_elements.append({
+            "string":"Stats for {0}".format(p2.name),
+            "location":self.browser.title})
+
+        self.__verify_expected_elements()
 
     def test_jams_played_displayed_correctly(self):
         """Ensure the number of jams played is displayed properly"""
         expected_jams = 16
         total_jams = 20
-        p = Player.objects.create() 
+        p = self.created_players[0]
         
         for i in range(0, total_jams):
             j = Jam.objects.create()
-            j.save()
-            if(i < expected_jams):
+            if(i < expected_jams-1):
                 PlayerToJam.objects.create(player=p, jam=j)
         
         self.url.append('/{0}'.format(p.id))
-              
-
         self.browser.get(''.join(self.url))
-        expected_strs = ['jams: {0}'.format(expected_jams),
-                ]
-        for expected in expected_strs:
-            self.assertIn(expected,
-                    self.browser.page_source, 
-                    msg="'{0}' not found on page".format(expected)
-            )
+
+        self.expected_elements.append({
+            "string":'jams: {0}'.format(expected_jams),
+            "location":self.browser.page_source
+        })
+                
+        self.__verify_expected_elements()
 
     def test_total_jams_displayed(self):
         """Ensure the total number of jams is displayed on the page"""
