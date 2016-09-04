@@ -21,6 +21,7 @@ bouts
         self.created_players = []
         self.__create_players(new_players=self.expected_players)
         self.expected_elements = []
+        self.created_jams = []
         super().setUp()
 
     def __create_players(self, new_players=[{"name":"Default",
@@ -29,6 +30,23 @@ bouts
         """players is a list of dicts to be passed to Player model as kwargs"""
         for current_player in new_players:
             self.created_players.append(Player.objects.create(**current_player))
+
+    def __create_jams(self, number):
+        for i in range(0, number):
+            self.created_jams.append(Jam.objects.create())
+
+    def __put_player_in_jams(self, player, blocker=0, pivot=0, jammer=0):
+        for i in range(0, blocker+pivot+jammer):
+            position = None
+            if(i < blocker):
+                position = PlayerToJam.BLOCKER
+            elif(i < pivot):
+                position = PlayerToJam.PIVOT
+            elif(i < jammer):
+                position = PlayerToJam.JAMMER
+            
+            PlayerToJam.objects.create(player=player, jam=self.created_jams[i],
+                    position=position)
 
     def __verify_expected_elements(self):
         for test in self.expected_elements:
@@ -65,18 +83,21 @@ bouts
         expected_jams = 16
         total_jams = 20
         p = self.created_players[0]
+
+        self.__create_jams(total_jams)
+
+        self.__put_player_in_jams(player=p, blocker=16)
         
-        for i in range(0, total_jams):
-            j = Jam.objects.create()
-            if(i < expected_jams-1):
-                PlayerToJam.objects.create(player=p, jam=j)
+#        for i in range(0, expected_jams):
+#            PlayerToJam.objects.create(player=p, jam=self.created_jams[i])
         
         self.url.append('/{0}'.format(p.id))
         self.browser.get(''.join(self.url))
 
         self.expected_elements.append({
             "string":'jams: {0}'.format(expected_jams),
-            "location":self.browser.page_source
+            "location":self.browser.find_element_by_id(
+                'id_played_jams').get_attribute('innerHTML')
         })
                 
         self.__verify_expected_elements()
