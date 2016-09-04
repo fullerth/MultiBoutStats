@@ -13,7 +13,7 @@ bouts
         self.url = [self.server_url,
                     self.url_prefix,
                    ]
-        self.expected_players = [{"name":"Jill Nye"}]
+        self.expected_players = [{"name":"Jill Nye", 'pk':1}]
         self.created_players = []
         self.__create_players(new_players=self.expected_players)
         super().setUp()
@@ -28,13 +28,11 @@ bouts
 
     def test_landing_page_title(self):
         """Make sure that the correct title is displayed on the landing page"""
-        expected_name = "Jill Nye"
-
-        self.__create_players(new_players=[{'pk':1, 'name':expected_name}])
+        expected_string = "Stats for {0}".format(self.created_players[0].name)
 
         self.browser.get(''.join(self.url))
 
-        self.assertIn("Stats for {0}".format(expected_name), self.browser.title)
+        self.assertIn(expected_string, self.browser.title)
 
     def test_detail_page_title(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
