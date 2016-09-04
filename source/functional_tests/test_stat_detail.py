@@ -13,12 +13,24 @@ bouts
         self.url = [self.server_url,
                     self.url_prefix,
                    ]
+        self.expected_players = [{"name":"Jill Nye"}]
+        self.created_players = []
+        self.__create_players(new_players=self.expected_players)
         super().setUp()
+
+    def __create_players(self, new_players=[{"name":"Default",
+                                           "pk":None}]
+                            ):
+        """players is a list of dicts to be passed to Player model as kwargs"""
+        for current_player in new_players:
+            self.created_players.append(Player.objects.create(**current_player))
+
 
     def test_landing_page_title(self):
         """Make sure that the correct title is displayed on the landing page"""
         expected_name = "Jill Nye"
-        p = Player.objects.create(pk=1, name=expected_name)
+
+        self.__create_players(new_players=[{'pk':1, 'name':expected_name}])
 
         self.browser.get(''.join(self.url))
 
