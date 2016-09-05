@@ -22,6 +22,7 @@ bouts
         self.__create_players(new_players=self.expected_players)
         self.expected_elements = []
         self.created_jams = []
+        self.created_playertojams = []
         super().setUp()
 
     def __create_players(self, new_players=[{"name":"Default",
@@ -45,26 +46,36 @@ bouts
             elif(i < jammer):
                 position = PlayerToJam.JAMMER
             
-            PlayerToJam.objects.create(player=player, jam=self.created_jams[i],
-                    position=position)
+            self.created_playertojams.append(PlayerToJam.objects.create(
+                player=player, jam=self.created_jams[i], position=position))
 
     def __verify_expected_elements(self):
         for test in self.expected_elements:
-            self.assertIn(test['string'], test['location'])
+            if 'message' not in test:
+                test['message'] = None
+            if 'name' not in test:
+                test['name'] = None
+            with self.subTest(msg=test['name']):
+                self.assertIn(test['string'], test['location'], msg=test['message'])
 
 
     def test_landing_page_title(self):
         """Make sure that the correct title is displayed on the landing page"""
+        expected_name = self.created_players[0].name
         self.browser.get(''.join(self.url))
 
         self.expected_elements.append({
-            "string":"Stats for {0}".format(self.created_players[0].name), 
-            "location":self.browser.title})
+            "name":"Landing Page Title",
+            "string":"Stats for {0}".format(expected_name), 
+            "location":self.browser.title,
+            "message":"{0} not found in browser title".format(expected_name),
+        })
+            
 
         self.__verify_expected_elements()
 
 
-    def test_detail_page_title(self):
+    def test_detail_page_elements(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
         p2 = self.created_players[1]
 
@@ -73,8 +84,12 @@ bouts
         self.browser.get(''.join(self.url))
 
         self.expected_elements.append({
+            "name":"Detail Page Title",
             "string":"Stats for {0}".format(p2.name),
-            "location":self.browser.title})
+            "location":self.browser.title,
+            "message":"{0} not found in browser title for player id {1}".format(
+                p2.name, p2.id)
+        })
 
         self.__verify_expected_elements()
 
@@ -91,12 +106,16 @@ bouts
         self.url.append('/{0}'.format(p.id))
         self.browser.get(''.join(self.url))
 
+        expected_string = 'jams: {0}'.format(expected_jams)
+
         self.expected_elements.append({
-            "string":'jams: {0}'.format(expected_jams),
+            "name":"Jams Played Display",
+            "string":expected_string,
             "location":self.browser.find_element_by_id(
-                'id_played_jams').get_attribute('innerHTML')
+                'id_played_jams').get_attribute('innerHTML'),
+            "message":"{0} not found in id_played_jams".format(expected_string), 
         })
-                
+
         self.__verify_expected_elements()
 
     def test_total_jams_displayed(self):
