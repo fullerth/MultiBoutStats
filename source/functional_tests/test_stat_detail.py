@@ -14,15 +14,27 @@ bouts
                     self.url_prefix,
                    ]
         self.expected_players = [
-            {"name":"Jill Nye", 'pk':1}, 
-            {"name":"Cassie Beck", "pk":2}
+            {
+                "player":{"name":"Jill Nye", 'pk':1},
+                "positions":{"blocker":16, "pivot":0, "jammer":0},
+            }, 
+            {
+                "player":{"name":"Cassie Beck", "pk":2},
+                "positions":{"blocker":5,  "pivot":3, "jammer":2},
+            },
         ]
 
+        #This should eventually be calculated from expected_players dict, but
+        #for now is sufficient to be greater than the most number of played jams
+        self.total_jams = 20
+
         self.created_players = []
-        self.__create_players(new_players=self.expected_players)
         self.expected_elements = []
         self.created_jams = []
         self.created_playertojams = []
+
+        self.__create_jams(self.total_jams)
+        self.__create_players(new_players=self.expected_players)
         super().setUp()
 
     def __create_players(self, new_players=[{"name":"Default",
@@ -30,20 +42,28 @@ bouts
                             ):
         """players is a list of dicts to be passed to Player model as kwargs"""
         for current_player in new_players:
-            self.created_players.append(Player.objects.create(**current_player))
+            player = Player.objects.create(**current_player['player'])
+
+            self.created_players.append(player)
+            self.__put_player_in_jams(player=player, 
+                    positions=current_player['positions'])
 
     def __create_jams(self, number):
         for i in range(0, number):
             self.created_jams.append(Jam.objects.create())
 
-    def __put_player_in_jams(self, player, blocker=0, pivot=0, jammer=0):
+    def __put_player_in_jams(self, player, positions):
+        """Pass a player and a dictionary of the positions they should play"""
+        blocker = positions['blocker']
+        pivot = positions['pivot']
+        jammer = positions['jammer']
         for i in range(0, blocker+pivot+jammer):
             position = None
             if(i < blocker):
                 position = PlayerToJam.BLOCKER
-            elif(i < pivot):
+            elif(i < blocker+pivot):
                 position = PlayerToJam.PIVOT
-            elif(i < jammer):
+            elif(i < blocker+pivot+jammer):
                 position = PlayerToJam.JAMMER
             
             self.created_playertojams.append(PlayerToJam.objects.create(
@@ -70,10 +90,8 @@ bouts
             "location":self.browser.title,
             "message":"{0} not found in browser title".format(expected_name),
         })
-            
 
         self.__verify_expected_elements()
-
 
     def test_detail_page_elements(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
@@ -95,13 +113,10 @@ bouts
 
     def test_jams_played_displayed_correctly(self):
         """Ensure the number of jams played is displayed properly"""
-        expected_jams = 16
-        total_jams = 20
         p = self.created_players[0]
+        position = self.expected_players[0]['positions']
+        expected_jams = position['blocker']+position['pivot']+position['jammer']
 
-        self.__create_jams(total_jams)
-
-        self.__put_player_in_jams(player=p, blocker=expected_jams)
         
         self.url.append('/{0}'.format(p.id))
         self.browser.get(''.join(self.url))
@@ -120,40 +135,22 @@ bouts
 
     def test_total_jams_displayed(self):
         """Ensure the total number of jams is displayed on the page"""
-        expected_jams = 20
-        p = Player.objects.create()
-        
-        for i in range(0, expected_jams):
-            Jam.objects.create()
-
+        p = self.created_players[0]
         self.url.append('/{0}'.format(p.id))
 
         self.browser.get(''.join(self.url))
 
         total_jams = self.browser.find_element_by_id('id_total_jams')
 
-        self.assertIn(str(expected_jams), total_jams.get_attribute('innerHTML'), 
+        self.assertIn(str(self.total_jams), total_jams.get_attribute('innerHTML'), 
                 msg="Total number of jams not found on page")
 
     def test_positions_displayed_correctly(self):
         """Ensure the number of jams played as a blocker are displayed"""
-        expected_jammer = 8
-        expected_blocker = 5
-        expected_pivot = 3
-        total_jams = expected_jammer + expected_blocker + expected_pivot 
-        p = Player.objects.create()
-
-        for i in range(0, total_jams):
-            j = Jam.objects.create()
-            if(i < expected_jammer):
-                PlayerToJam.objects.create(player=p, jam=j,
-                        position=PlayerToJam.JAMMER)
-            elif(i < (expected_jammer + expected_blocker)):
-                PlayerToJam.objects.create(player=p, jam=j,
-                        position=PlayerToJam.BLOCKER)
-            elif(i < (expected_jammer + expected_blocker + expected_pivot)):
-                PlayerToJam.objects.create(player=p, jam=j,
-                        position=PlayerToJam.PIVOT)
+        p = self.created_players[1]
+        expected_blocker = self.expected_players[1]['positions']['blocker']
+        expected_pivot = self.expected_players[1]['positions']['pivot']
+        expected_jammer = self.expected_players[1]['positions']['jammer']
 
         self.url.append('/{0}'.format(p.id))
 
@@ -162,6 +159,8 @@ bouts
         jammer_jams = self.browser.find_element_by_id('id_jammer_jams')
         blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
         pivot_jams = self.browser.find_element_by_id('id_pivot_jams')
+
+        import pdb; pdb.set_trace()
 
         self.assertIn(str(expected_jammer), 
                 jammer_jams.get_attribute('innerHTML'),
