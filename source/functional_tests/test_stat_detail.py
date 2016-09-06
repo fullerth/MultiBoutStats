@@ -131,19 +131,15 @@ bouts
             "message":"{0} not found in id_played_jams".format(expected_string), 
         })
 
+        self.expected_elements.append({
+            "name":"Total Jams In Database Display",
+            "string":str(self.total_jams),
+            "location":self.browser.find_element_by_id(
+                'id_total_jams').get_attribute('innerHTML'),
+            "message":"{0} not found in id_total_jams".format(self.total_jams)
+        })
+
         self.__verify_expected_elements()
-
-    def test_total_jams_displayed(self):
-        """Ensure the total number of jams is displayed on the page"""
-        p = self.created_players[0]
-        self.url.append('/{0}'.format(p.id))
-
-        self.browser.get(''.join(self.url))
-
-        total_jams = self.browser.find_element_by_id('id_total_jams')
-
-        self.assertIn(str(self.total_jams), total_jams.get_attribute('innerHTML'), 
-                msg="Total number of jams not found on page")
 
     def test_positions_displayed_correctly(self):
         """Ensure the number of jams played as a blocker are displayed"""
