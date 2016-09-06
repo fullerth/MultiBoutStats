@@ -16,7 +16,7 @@ bouts
         self.expected_players = [
             {
                 "player":{"name":"Jill Nye", 'pk':1},
-                "positions":{"blocker":16, "pivot":0, "jammer":0},
+                "positions":{"blocker":16, "pivot":3, "jammer":1},
             }, 
             {
                 "player":{"name":"Cassie Beck", "pk":2},
@@ -159,8 +159,6 @@ bouts
         jammer_jams = self.browser.find_element_by_id('id_jammer_jams')
         blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
         pivot_jams = self.browser.find_element_by_id('id_pivot_jams')
-
-        import pdb; pdb.set_trace()
 
         self.assertIn(str(expected_jammer), 
                 jammer_jams.get_attribute('innerHTML'),

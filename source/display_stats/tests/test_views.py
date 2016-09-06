@@ -64,6 +64,7 @@ class StatDisplayPageTest(TestCase):
         total_jams = expected_blocking + expected_jamming + expected_pivot
 
         p = Player.objects.create()
+        p2 = Player.objects.create()
 
         for i in range(0, total_jams):
             j = Jam.objects.create()
@@ -76,7 +77,13 @@ class StatDisplayPageTest(TestCase):
             elif(i < (expected_blocking+expected_jamming+expected_pivot)):
                 PlayerToJam.objects.create(player = p, jam = j,
                         position = PlayerToJam.PIVOT)
-
+            #Make sure only displaying info for current player
+            PlayerToJam.objects.create(player = p2, jam = j, 
+                    position = PlayerToJam.BLOCKER)
+            PlayerToJam.objects.create(player = p2, jam = j, 
+                    position = PlayerToJam.PIVOT)
+            PlayerToJam.objects.create(player = p2, jam = j, 
+                    position = PlayerToJam.JAMMER)
 
         c = Client()
         response = c.get(reverse(self.test_url))
