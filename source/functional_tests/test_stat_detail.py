@@ -97,46 +97,38 @@ bouts
         """Ensure that the correct name shows up in the stat detail page for id=2"""
         p2 = self.created_players[1]
 
-        self.url.append('/{0}'.format(p2.id))
+        position = self.expected_players[1]['positions']
 
+        self.url.append('/{0}'.format(p2.id))
         self.browser.get(''.join(self.url))
 
+        expected_title_string = "Stats for {0}".format(p2.name)
         self.expected_elements.append({
             "name":"Detail Page Title",
-            "string":"Stats for {0}".format(p2.name),
+            "string":expected_title_string,
             "location":self.browser.title,
-            "message":"{0} not found in browser title for player id {1}".format(
-                p2.name, p2.id)
+            "message":"'{0}' not found in browser title for player id {1}".format(
+                expected_title_string, p2.id)
         })
 
-        self.__verify_expected_elements()
-
-    def test_jams_played_displayed_correctly(self):
-        """Ensure the number of jams played is displayed properly"""
-        p = self.created_players[0]
-        position = self.expected_players[0]['positions']
-        expected_jams = position['blocker']+position['pivot']+position['jammer']
-
-        
-        self.url.append('/{0}'.format(p.id))
-        self.browser.get(''.join(self.url))
-
-        expected_string = 'jams: {0}'.format(expected_jams)
-
+        expected_jams_played = "jams: {0}".format(
+            position['blocker']+position['pivot']+position['jammer'])
         self.expected_elements.append({
             "name":"Jams Played Display",
-            "string":expected_string,
+            "string":expected_jams_played,
             "location":self.browser.find_element_by_id(
                 'id_played_jams').get_attribute('innerHTML'),
-            "message":"{0} not found in id_played_jams".format(expected_string), 
+            "message":"'{0}' not found in id_played_jams".format(
+                expected_jams_played), 
         })
 
+        total_jams_played = "total jams: {0}".format(self.total_jams)
         self.expected_elements.append({
             "name":"Total Jams In Database Display",
-            "string":str(self.total_jams),
+            "string":total_jams_played,
             "location":self.browser.find_element_by_id(
                 'id_total_jams').get_attribute('innerHTML'),
-            "message":"{0} not found in id_total_jams".format(self.total_jams)
+            "message":"'{0}' not found in id_total_jams".format(total_jams_played)
         })
 
         self.__verify_expected_elements()
