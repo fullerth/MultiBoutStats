@@ -99,6 +99,10 @@ bouts
 
         position = self.expected_players[1]['positions']
 
+        expected_blocker = "blocker jams: {0}".format(position['blocker'])
+        expected_pivot = "pivot jams: {0}".format(position['pivot'])
+        expected_jammer = "jammer jams: {0}".format(position['jammer'])
+
         self.url.append('/{0}'.format(p2.id))
         self.browser.get(''.join(self.url))
 
@@ -131,30 +135,32 @@ bouts
             "message":"'{0}' not found in id_total_jams".format(total_jams_played)
         })
 
+        self.expected_elements.append({
+            "name":"Jams as Jammer Display",
+            "string":expected_jammer,
+            "location":self.browser.find_element_by_id(
+                'id_jammer_jams').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_jammer_jams".format(
+                expected_jammer)
+        })
+        
+        self.expected_elements.append({
+            "name":"Jams as Blocker Display",
+            "string":expected_blocker,
+            "location":self.browser.find_element_by_id(
+                'id_blocker_jams').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_blocker_jams".format(
+                expected_blocker)
+        })
+
+        self.expected_elements.append({
+            "name":"Jams as Pivot Display",
+            "string":expected_pivot,
+            "location":self.browser.find_element_by_id(
+                'id_pivot_jams').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_pivot_jams".format(expected_pivot)
+
+        })
+
         self.__verify_expected_elements()
-
-    def test_positions_displayed_correctly(self):
-        """Ensure the number of jams played as a blocker are displayed"""
-        p = self.created_players[1]
-        expected_blocker = self.expected_players[1]['positions']['blocker']
-        expected_pivot = self.expected_players[1]['positions']['pivot']
-        expected_jammer = self.expected_players[1]['positions']['jammer']
-
-        self.url.append('/{0}'.format(p.id))
-
-        self.browser.get(''.join(self.url))
-
-        jammer_jams = self.browser.find_element_by_id('id_jammer_jams')
-        blocker_jams = self.browser.find_element_by_id('id_blocker_jams')
-        pivot_jams = self.browser.find_element_by_id('id_pivot_jams')
-
-        self.assertIn(str(expected_jammer), 
-                jammer_jams.get_attribute('innerHTML'),
-                msg="Number of Jams as blocker not found in id_jammer_jams")
-        self.assertIn(str(expected_blocker), 
-                blocker_jams.get_attribute('innerHTML'),
-                msg="Number of Jams as blocker not found in id_blocker_jams")
-        self.assertIn(str(expected_pivot), 
-                pivot_jams.get_attribute('innerHTML'),
-                msg="Number of Jams as blocker not found in id_pivot_jams")
 
