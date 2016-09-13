@@ -5,7 +5,8 @@ Currently displaying the number of jams participated in and total jams in the
 database.
 
 # Required packages
-Pyvirtualdisplay requires `xvfb`
+Pyvirtualdisplay is used to run selenium tests in a virtual window and requires 
+`xvfb`
 
 '''sudo apt-get install xvfb'''
 
