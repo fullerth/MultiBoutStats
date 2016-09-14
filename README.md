@@ -1,8 +1,8 @@
 # Overview
 Project to display player stats across multiple bouts.
 
-Currently displaying the number of jams participated in and total jams in the
-database.
+Currently displaying the number of jams participated in, positions played, total
+jams played by player and total jams in the database.
 
 # Required packages
 Pyvirtualdisplay is used to run selenium tests in a virtual window and requires 
