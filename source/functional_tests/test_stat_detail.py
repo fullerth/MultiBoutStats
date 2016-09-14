@@ -91,7 +91,9 @@ bouts
         self.url.append('/{0}'.format(p2.id))
         self.browser.get(''.join(self.url))
 
-        expected_title_string = "Stats for {0}".format(p2.name)
+        expected_name = p2.name
+        expected_title_string = "Stats for {0}".format(expected_name)
+
         self.expected_elements.append({
             "name":"Detail Page Title",
             "string":expected_title_string,
@@ -145,6 +147,14 @@ bouts
                 'id_pivot_jams').get_attribute('innerHTML'),
             "message":"'{0}' not found in id_pivot_jams".format(expected_pivot)
 
+        })
+
+        self.expected_elements.append({
+            "name":"Blocker Name Display",
+            "string":expected_name,
+            "location":self.browser.find_element_by_id(
+                'id_player_name').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_player_name".format(expected_name)
         })
 
         self.__verify_expected_elements()
