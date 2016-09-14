@@ -78,21 +78,6 @@ bouts
             with self.subTest(msg=test['name']):
                 self.assertIn(test['string'], test['location'], msg=test['message'])
 
-
-    def test_landing_page_title(self):
-        """Make sure that the correct title is displayed on the landing page"""
-        expected_name = self.created_players[0].name
-        self.browser.get(''.join(self.url))
-
-        self.expected_elements.append({
-            "name":"Landing Page Title",
-            "string":"Stats for {0}".format(expected_name), 
-            "location":self.browser.title,
-            "message":"{0} not found in browser title".format(expected_name),
-        })
-
-        self.__verify_expected_elements()
-
     def test_detail_page_elements(self):
         """Ensure that the correct name shows up in the stat detail page for id=2"""
         p2 = self.created_players[1]
