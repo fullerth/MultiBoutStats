@@ -94,6 +94,8 @@ bouts
         expected_name = p2.name
         expected_title_string = "Stats for {0}".format(expected_name)
 
+        expected_bouts = "bouts: 2"
+
         self.expected_elements.append({
             "name":"Detail Page Title",
             "string":expected_title_string,
@@ -155,6 +157,14 @@ bouts
             "location":self.browser.find_element_by_id(
                 'id_player_name').get_attribute('innerHTML'),
             "message":"'{0}' not found in id_player_name".format(expected_name)
+        })
+
+        self.expected_elements.append({
+            "name":"Bouts Played Display",
+            "string":expected_bouts,
+            "location":self.browser.find_element_by_id(
+                'id_bouts').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_bouts".format(expected_bouts)
         })
 
         self.__verify_expected_elements()
