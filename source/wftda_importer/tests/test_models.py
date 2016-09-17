@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from wftda_importer.models import Player, Jam, PlayerToJam
+from wftda_importer.models import Player, Jam, PlayerToJam, Bout
 
 class PlayerTests(TestCase):
     def setUp(self):
@@ -30,4 +30,10 @@ class PlayerToJamTests(TestCase):
 
         PlayerToJam(player=p, jam=j)
 
+class BoutTests(TestCase):
+    def test_model_fields_exist(self):
+        expected_name = "Test Bout"
         
+        b = Bout.objects.create(location=expected_name)
+
+
