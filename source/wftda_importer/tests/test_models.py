@@ -33,7 +33,8 @@ class PlayerToJamTests(TestCase):
 class BoutTests(TestCase):
     def test_model_fields_exist(self):
         expected_name = "Test Bout"
+        expected_player = Player.objects.create()
         
-        b = Bout.objects.create(location=expected_name)
-
+        b = Bout.objects.create(location=expected_name, 
+                home_roster=expected_player)
 

@@ -24,4 +24,5 @@ class PlayerToJam(models.Model):
 
 class Bout(models.Model):
     location = models.CharField(max_length=200, null=True)
+    home_roster = models.ForeignKey('Player', null=True)
 
