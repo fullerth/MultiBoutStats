@@ -38,3 +38,13 @@ class BoutTests(TestCase):
         b = Bout.objects.create(location=expected_name, 
                 home_roster=expected_player)
 
+    def test_model_string_representation(self):
+        expected_name = "Cee Cee"
+        expected_string = "{0}".format(expected_name)
+
+        p = Player.objects.create(name=expected_name)
+
+        b = Bout.objects.create(home_roster=p)
+
+        self.assertEqual(str(b), expected_string)
+
