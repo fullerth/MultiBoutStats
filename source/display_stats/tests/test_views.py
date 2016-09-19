@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from wftda_importer.models import Player, Jam, PlayerToJam
+from wftda_importer.models import Player, Jam, PlayerToJam, Bout
 
 class StatDisplayPageTest(TestCase):
     def setUp(self):
@@ -94,3 +94,15 @@ class StatDisplayPageTest(TestCase):
         self.assertEqual(expected_pivot, response.context['pivot_jams'],
                 msg="Incorrect pivot jams reported")
 
+    def test_stat_page_passes_correct_bouts_played_in_context(self):
+        """Ensure context contains correct number of bouts played by the player"""
+        p = Player.objects.create()
+        
+        expected_bouts = 5
+        for i in range(0, expected_bouts):
+            Bout.objects.create(home_roster=p)
+
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(expected_bouts, response.context['bouts_played'],
+                msg="Incorrect bouts played in context")

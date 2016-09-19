@@ -1,6 +1,6 @@
 from .base import FunctionalTest
 
-from wftda_importer.models import Player, Jam, PlayerToJam
+from wftda_importer.models import Player, Jam, PlayerToJam, Bout
 
 class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
@@ -16,11 +16,16 @@ bouts
         self.expected_players = [
             {
                 "player":{"name":"Jill Nye", 'pk':1},
-                "positions":{"blocker":16, "pivot":3, "jammer":1},
+                "bouts" : [
+                    {"positions":{"blocker":16, "pivot":3, "jammer":1}, "pk":1},
+                    {"positions":{"blocker":3, "pivot":1, "jammer":2}, "pk":2}
+                ]
             }, 
             {
                 "player":{"name":"Cassie Beck", "pk":2},
-                "positions":{"blocker":5,  "pivot":3, "jammer":2},
+                "bouts" : [
+                    {"positions":{"blocker":5,  "pivot":3, "jammer":2}, "pk":1}
+                ]
             },
         ]
 
@@ -43,14 +48,21 @@ bouts
         """players is a list of dicts to be passed to Player model as kwargs"""
         for current_player in new_players:
             player = Player.objects.create(**current_player['player'])
-
             self.created_players.append(player)
-            self.__put_player_in_jams(player=player, 
-                    positions=current_player['positions'])
+
+            self.__put_player_in_bouts(player=player, 
+                    bouts=current_player['bouts'])
 
     def __create_jams(self, number):
         for i in range(0, number):
             self.created_jams.append(Jam.objects.create())
+
+    def __put_player_in_bouts(self, player, bouts):
+        """Pass a player and a list of bout dicts to add them to the jams"""
+        for bout in bouts:
+            self.__put_player_in_jams(player=player, 
+                    positions=bout["positions"])
+            Bout.objects.create(home_roster=player)
 
     def __put_player_in_jams(self, player, positions):
         """Pass a player and a dictionary of the positions they should play"""
@@ -82,7 +94,11 @@ bouts
         """Ensure that the correct name shows up in the stat detail page for id=2"""
         p2 = self.created_players[1]
 
-        position = self.expected_players[1]['positions']
+        position = {"blocker":0, "pivot":0, "jammer":0}
+        for bout in self.expected_players[1]["bouts"]:
+            position["blocker"] += bout['positions']["blocker"]
+            position["pivot"] += bout['positions']["pivot"]
+            position["jammer"] += bout['positions']["jammer"]
 
         expected_blocker = "blocker jams: {0}".format(position['blocker'])
         expected_pivot = "pivot jams: {0}".format(position['pivot'])
@@ -94,7 +110,8 @@ bouts
         expected_name = p2.name
         expected_title_string = "Stats for {0}".format(expected_name)
 
-        expected_bouts = "bouts: 2"
+        num_bouts = Bout.objects.filter(home_roster=p2).count() 
+        expected_bouts = "bouts: {0}".format(num_bouts)
 
         self.expected_elements.append({
             "name":"Detail Page Title",
