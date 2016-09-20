@@ -1,7 +1,7 @@
 from .base import FunctionalTest
 
 from wftda_importer import factories
-from wftda_importer.models import Player, Jam, PlayerToJam, Bout
+from wftda_importer.models import Bout, PlayerToJam
 
 class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
@@ -16,14 +16,14 @@ bouts
                    ]
         self.expected_players = [
             {
-                "player":{"name":"Jill Nye", 'pk':1},
+                "player":{"name":"Jill Nye"},
                 "bouts" : [
                     {"positions":{"blocker":16, "pivot":3, "jammer":1}, "pk":1},
                     {"positions":{"blocker":3, "pivot":1, "jammer":2}, "pk":2}
                 ]
             }, 
             {
-                "player":{"name":"Cassie Beck", "pk":2},
+                "player":{"name":"Cassie Beck"},
                 "bouts" : [
                     {"positions":{"blocker":5,  "pivot":3, "jammer":2}, "pk":1}
                 ]
@@ -56,7 +56,7 @@ bouts
 
     def __create_jams(self, number):
         for i in range(0, number):
-            self.created_jams.append(Jam.objects.create())
+            self.created_jams.append(factories.JamFactory())
 
     def __create_bouts(self, bouts):
         for bout in bouts:
@@ -67,7 +67,7 @@ bouts
         for bout in bouts:
             self.__put_player_in_jams(player=player, 
                     positions=bout["positions"])
-            Bout.objects.create(home_roster=player)
+            factories.BoutFactory(home_roster=player)
 
     def __put_player_in_jams(self, player, positions):
         """Pass a player and a dictionary of the positions they should play"""
@@ -83,7 +83,7 @@ bouts
             elif(i < blocker+pivot+jammer):
                 position = PlayerToJam.JAMMER
             
-            self.created_playertojams.append(PlayerToJam.objects.create(
+            self.created_playertojams.append(factories.PlayerToJamFactory(
                 player=player, jam=self.created_jams[i], position=position))
 
     def __verify_expected_elements(self):
