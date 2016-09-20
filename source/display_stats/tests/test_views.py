@@ -106,3 +106,4 @@ class StatDisplayPageTest(TestCase):
         response = c.get(reverse(self.test_url))
         self.assertEqual(expected_bouts, response.context['bouts_played'],
                 msg="Incorrect bouts played in context")
+

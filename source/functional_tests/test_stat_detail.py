@@ -1,5 +1,6 @@
 from .base import FunctionalTest
 
+from wftda_importer import factories
 from wftda_importer.models import Player, Jam, PlayerToJam, Bout
 
 class StatDetailPage(FunctionalTest):
@@ -47,7 +48,7 @@ bouts
                             ):
         """players is a list of dicts to be passed to Player model as kwargs"""
         for current_player in new_players:
-            player = Player.objects.create(**current_player['player'])
+            player = factories.PlayerFactory.create(**current_player['player'])
             self.created_players.append(player)
 
             self.__put_player_in_bouts(player=player, 
@@ -56,6 +57,10 @@ bouts
     def __create_jams(self, number):
         for i in range(0, number):
             self.created_jams.append(Jam.objects.create())
+
+    def __create_bouts(self, bouts):
+        for bout in bouts:
+            self.__put_player_in_bout()
 
     def __put_player_in_bouts(self, player, bouts):
         """Pass a player and a list of bout dicts to add them to the jams"""
@@ -110,8 +115,8 @@ bouts
         expected_name = p2.name
         expected_title_string = "Stats for {0}".format(expected_name)
 
-        num_bouts = Bout.objects.filter(home_roster=p2).count() 
-        expected_bouts = "bouts: {0}".format(num_bouts)
+        expected_bouts = "bouts: {0}".format(Bout.objects.filter(
+            home_roster=p2).count())
 
         self.expected_elements.append({
             "name":"Detail Page Title",
