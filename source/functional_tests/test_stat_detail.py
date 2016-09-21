@@ -14,77 +14,23 @@ bouts
         self.url = [self.server_url,
                     self.url_prefix,
                    ]
-        self.expected_players = [
-            {
-                "player":{"name":"Jill Nye"},
-                "bouts" : [
-                    {"positions":{"blocker":16, "pivot":3, "jammer":1}, "pk":1},
-                    {"positions":{"blocker":3, "pivot":1, "jammer":2}, "pk":2}
-                ]
-            }, 
-            {
-                "player":{"name":"Cassie Beck"},
-                "bouts" : [
-                    {"positions":{"blocker":5,  "pivot":3, "jammer":2}, "pk":1}
-                ]
-            },
-        ]
+        
+        self.created_bouts = factories.BoutFactory.create_batch(2)
+        self.created_players = factories.PlayerFactory.create_batch(2)
 
-        #This should eventually be calculated from expected_players dict, but
-        #for now is sufficient to be greater than the most number of played jams
         self.total_jams = 20
+        self.created_jams = factories.JamFactory.create_batch(self.total_jams)
 
-        self.created_players = []
-        self.expected_elements = []
-        self.created_jams = []
         self.created_playertojams = []
+        for jam in self.created_jams:
+            self.created_playertojams.append(factories.PlayerToJamFactory.create(
+                player=self.created_players[0], jam=jam))
+            self.created_playertojams.append(factories.PlayerToJamFactory.create(
+                player=self.created_players[1], jam=jam))
 
-        self.__create_jams(self.total_jams)
-        self.__create_players(new_players=self.expected_players)
+        self.expected_elements = []
+
         super().setUp()
-
-    def __create_players(self, new_players=[{"name":"Default",
-                                           "pk":None}]
-                            ):
-        """players is a list of dicts to be passed to Player model as kwargs"""
-        for current_player in new_players:
-            player = factories.PlayerFactory.create(**current_player['player'])
-            self.created_players.append(player)
-
-            self.__put_player_in_bouts(player=player, 
-                    bouts=current_player['bouts'])
-
-    def __create_jams(self, number):
-        for i in range(0, number):
-            self.created_jams.append(factories.JamFactory())
-
-    def __create_bouts(self, bouts):
-        for bout in bouts:
-            self.__put_player_in_bout()
-
-    def __put_player_in_bouts(self, player, bouts):
-        """Pass a player and a list of bout dicts to add them to the jams"""
-        for bout in bouts:
-            self.__put_player_in_jams(player=player, 
-                    positions=bout["positions"])
-            factories.BoutFactory(home_roster=player)
-
-    def __put_player_in_jams(self, player, positions):
-        """Pass a player and a dictionary of the positions they should play"""
-        blocker = positions['blocker']
-        pivot = positions['pivot']
-        jammer = positions['jammer']
-        for i in range(0, blocker+pivot+jammer):
-            position = None
-            if(i < blocker):
-                position = PlayerToJam.BLOCKER
-            elif(i < blocker+pivot):
-                position = PlayerToJam.PIVOT
-            elif(i < blocker+pivot+jammer):
-                position = PlayerToJam.JAMMER
-            
-            self.created_playertojams.append(factories.PlayerToJamFactory(
-                player=player, jam=self.created_jams[i], position=position))
 
     def __verify_expected_elements(self):
         for test in self.expected_elements:
@@ -96,14 +42,17 @@ bouts
                 self.assertIn(test['string'], test['location'], msg=test['message'])
 
     def test_detail_page_elements(self):
-        """Ensure that the correct name shows up in the stat detail page for id=2"""
+        """Ensure that the correct element values show up in the stat detail page for id=2"""
         p2 = self.created_players[1]
 
-        position = {"blocker":0, "pivot":0, "jammer":0}
-        for bout in self.expected_players[1]["bouts"]:
-            position["blocker"] += bout['positions']["blocker"]
-            position["pivot"] += bout['positions']["pivot"]
-            position["jammer"] += bout['positions']["jammer"]
+        position = {
+            "blocker":PlayerToJam.objects.filter(
+                player=p2, position=PlayerToJam.BLOCKER).count(), 
+            "pivot":PlayerToJam.objects.filter(
+                player=p2, position=PlayerToJam.PIVOT).count(), 
+            "jammer":PlayerToJam.objects.filter(
+                player=p2, position=PlayerToJam.JAMMER).count()
+        }
 
         expected_blocker = "blocker jams: {0}".format(position['blocker'])
         expected_pivot = "pivot jams: {0}".format(position['pivot'])
@@ -122,7 +71,8 @@ bouts
             "name":"Detail Page Title",
             "string":expected_title_string,
             "location":self.browser.title,
-            "message":"'{0}' not found in browser title for player id {1}".format(
+            "message":
+                "'{0}' not found in browser title for player id {1}".format(
                 expected_title_string, p2.id)
         })
 

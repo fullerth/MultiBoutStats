@@ -6,11 +6,12 @@ class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Player
 
-    name = "Cassie Beck"
+    name = factory.Sequence(lambda n: "player{0}".format(n))
 
 class JamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Jam
+
 
 class PlayerToJamFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -18,7 +19,8 @@ class PlayerToJamFactory(factory.django.DjangoModelFactory):
 
     player = factory.SubFactory(PlayerFactory)
     jam = factory.SubFactory(JamFactory)
-    position = models.PlayerToJam.BLOCKER
+    position = factory.Iterator([models.PlayerToJam.BLOCKER, 
+        models.PlayerToJam.PIVOT, models.PlayerToJam.JAMMER])
 
 class BoutFactory(factory.django.DjangoModelFactory):
     class Meta:
