@@ -1,7 +1,9 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from wftda_importer.models import Player, Jam, PlayerToJam, Bout
+from wftda_importer.models import Player, Jam, PlayerToJam, Bout, Roster
+
+from wftda_importer import factories
 
 class PlayerTests(TestCase):
     def setUp(self):
@@ -47,4 +49,18 @@ class BoutTests(TestCase):
         b = Bout.objects.create(home_roster=p)
 
         self.assertEqual(str(b), expected_string)
+
+class RosterTests(TestCase):
+    def test_model_fields_exist(self):
+        expected_players = [factories.PlayerFactory(), 
+                factories.PlayerFactory(), factories.PlayerFactory()]
+
+        roster = Roster.objects.create()
+
+        for player in expected_players:
+            roster.players.add(player)
+
+        observed_players = list(roster.players.all())
+
+        self.assertListEqual(expected_players, observed_players)
 

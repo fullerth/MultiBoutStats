@@ -29,4 +29,5 @@ class Bout(models.Model):
     def __str__(self):
         return("{0}".format(self.home_roster.name))
 
-
+class Roster(models.Model):
+    players = models.ManyToManyField('Player')
