@@ -8,6 +8,8 @@ from pyvirtualdisplay import Display
 
 from django.core.urlresolvers import reverse
 
+from .chromedriver.chromedriver_cfg import chromedriver_path
+
 SCREEN_DUMP_LOCATION = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'screendumps'
 )
@@ -38,7 +40,7 @@ class FunctionalTest(LiveServerTestCase):
         self.display = Display()
         self.display.start()
 
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome(executable_path=chromedriver_path)
         self.enable_implicit_wait()
 
     def tearDown(self):
