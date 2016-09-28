@@ -15,7 +15,7 @@ Pyvirtualdisplay is used to run selenium tests in a virtual window and requires
 Chromedriver is needed to run selenium tests with chrome. Customize the 
 [chromedriver_cfg.py](source/functional_tests/chromedriver/chromedriver_cfg.py) 
 with the local path to the chromedriver binary. See the 
-[Readme.md](source/functional_tests/chromedriver/Readme.md) in chromedriver for
+[README.md](source/functional_tests/chromedriver/README.md) in chromedriver for
  more info.
 
 # Project Templates

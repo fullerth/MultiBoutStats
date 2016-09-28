@@ -1,3 +1,4 @@
+# Configuring the chromedriver path
 The [chromedriver_cfg.py](chromedriver_cfg.py) file sets `chromedriver_path` 
 with the path to the chromedriver binary. The 
 [base functional test class](functional_test.py) passes 
