@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from wftda_importer.models import Player, Jam, PlayerToJam, Bout
+from wftda_importer.factories import RosterWithPlayersFactory
 
 class StatDisplayPageTest(TestCase):
     def setUp(self):
@@ -96,11 +97,11 @@ class StatDisplayPageTest(TestCase):
 
     def test_stat_page_passes_correct_bouts_played_in_context(self):
         """Ensure context contains correct number of bouts played by the player"""
-        p = Player.objects.create()
+        roster = RosterWithPlayersFactory()
         
         expected_bouts = 5
         for i in range(0, expected_bouts):
-            Bout.objects.create(home_roster=p)
+            Bout.objects.create(home_roster=roster)
 
         c = Client()
         response = c.get(reverse(self.test_url))

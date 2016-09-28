@@ -1,6 +1,7 @@
 from django.test import TestCase
 
-from wftda_importer.factories import RosterWithPlayersFactory, PlayerFactory
+from wftda_importer.factories import RosterWithPlayersFactory, PlayerFactory, \
+CompleteBoutFactory
 
 class TestRosterWithPlayersFactory(TestCase):
     def test_creates_and_adds_players(self):
@@ -14,3 +15,11 @@ class TestRosterWithPlayersFactory(TestCase):
         roster = RosterWithPlayersFactory(players=player_list)
 
         self.assertListEqual(list(roster.players.all()), player_list)
+
+class TestCompleteBoutFactory(TestCase):
+    def test_creates_and_adds_rosters_with_players(self):
+        bout = CompleteBoutFactory()
+
+        self.assertNotEqual(bout.home_roster, None)
+
+

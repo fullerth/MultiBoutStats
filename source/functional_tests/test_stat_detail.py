@@ -15,19 +15,9 @@ bouts
                     self.url_prefix,
                    ]
         
-        self.created_bouts = factories.BoutFactory.create_batch(2)
-        self.created_players = factories.PlayerFactory.create_batch(2)
-
+        self.created_bouts = factories.CompleteBoutFactory.create_batch(2)
         self.total_jams = 20
         self.created_jams = factories.JamFactory.create_batch(self.total_jams)
-
-        self.created_playertojams = []
-        for jam in self.created_jams:
-            self.created_playertojams.append(factories.PlayerToJamFactory.create(
-                player=self.created_players[0], jam=jam))
-            self.created_playertojams.append(factories.PlayerToJamFactory.create(
-                player=self.created_players[1], jam=jam))
-
         self.expected_elements = []
 
         super().setUp()
@@ -43,7 +33,7 @@ bouts
 
     def test_detail_page_elements(self):
         """Ensure that the correct element values show up in the stat detail page for id=2"""
-        p2 = self.created_players[1]
+        p2 = self.created_bouts[1].home_roster.players.all()[0]
 
         position = {
             "blocker":PlayerToJam.objects.filter(
@@ -65,7 +55,7 @@ bouts
         expected_title_string = "Stats for {0}".format(expected_name)
 
         expected_bouts = "bouts: {0}".format(Bout.objects.filter(
-            home_roster=p2).count())
+            home_roster__players=p2).count())
 
         self.expected_elements.append({
             "name":"Detail Page Title",

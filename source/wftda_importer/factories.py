@@ -44,6 +44,8 @@ class BoutFactory(factory.django.DjangoModelFactory):
         model = models.Bout
 
     location = factory.Sequence(lambda n: "Location{0}".format(n))
-    home_roster = factory.SubFactory(PlayerFactory)
+    home_roster = factory.SubFactory(RosterFactory)
 
+class CompleteBoutFactory(BoutFactory):
+    home_roster = factory.SubFactory(RosterWithPlayersFactory)
 

@@ -35,18 +35,16 @@ class PlayerToJamTests(TestCase):
 class BoutTests(TestCase):
     def test_model_fields_exist(self):
         expected_name = "Test Bout"
-        expected_player = Player.objects.create()
+        expected_home_roster = Roster.objects.create()
         
         b = Bout.objects.create(location=expected_name, 
-                home_roster=expected_player)
+                home_roster=expected_home_roster)
 
     def test_model_string_representation(self):
-        expected_name = "Cee Cee"
-        expected_string = "{0}".format(expected_name)
+        expected_location = "Rat's Nest"
+        expected_string = "{0}".format(expected_location)
 
-        p = Player.objects.create(name=expected_name)
-
-        b = Bout.objects.create(home_roster=p)
+        b = Bout.objects.create(location=expected_string)
 
         self.assertEqual(str(b), expected_string)
 
