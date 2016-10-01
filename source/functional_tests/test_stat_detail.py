@@ -17,7 +17,8 @@ bouts
         
         self.created_bouts = factories.CompleteBoutFactory.create_batch(2)
         self.total_jams = 20
-        self.created_jams = factories.JamFactory.create_batch(self.total_jams)
+        self.created_jams = factories.JamWithPlayersFactory.create_batch(
+                self.total_jams)
         self.expected_elements = []
 
         super().setUp()

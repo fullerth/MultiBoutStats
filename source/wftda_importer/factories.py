@@ -12,6 +12,8 @@ class JamFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Jam
 
+class JamWithPlayersFactory(JamFactory):
+    players = factory.RelatedFactory(PlayerFactory)
 
 class PlayerToJamFactory(factory.django.DjangoModelFactory):
     class Meta:
