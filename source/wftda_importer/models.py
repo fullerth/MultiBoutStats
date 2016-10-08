@@ -8,6 +8,7 @@ class Player(models.Model):
 
 class Jam(models.Model):
     players = models.ManyToManyField(Player, through='PlayerToJam')
+    bout = models.ForeignKey('Bout', null=True)
 
 class PlayerToJam(models.Model):
     BLOCKER = 'B'

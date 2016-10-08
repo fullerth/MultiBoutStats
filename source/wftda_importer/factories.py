@@ -51,3 +51,5 @@ class BoutFactory(factory.django.DjangoModelFactory):
 class CompleteBoutFactory(BoutFactory):
     home_roster = factory.SubFactory(RosterWithPlayersFactory)
 
+    jam = factory.RelatedFactory(JamFactory, 'bout')
+

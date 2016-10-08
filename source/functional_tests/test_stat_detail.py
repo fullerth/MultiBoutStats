@@ -1,7 +1,7 @@
 from .base import FunctionalTest
 
 from wftda_importer import factories
-from wftda_importer.models import Bout, PlayerToJam
+from wftda_importer.models import Bout, PlayerToJam, Jam
 
 class StatDetailPage(FunctionalTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
@@ -16,9 +16,6 @@ bouts
                    ]
         
         self.created_bouts = factories.CompleteBoutFactory.create_batch(2)
-        self.total_jams = 20
-        self.created_jams = factories.JamWithPlayersFactory.create_batch(
-                self.total_jams)
         self.expected_elements = []
 
         super().setUp()
@@ -35,6 +32,8 @@ bouts
     def test_detail_page_elements(self):
         """Ensure that the correct element values show up in the stat detail page for id=2"""
         p2 = self.created_bouts[1].home_roster.players.all()[0]
+
+        total_jams = Jam.objects.all().count()
 
         position = {
             "blocker":PlayerToJam.objects.filter(
@@ -78,7 +77,7 @@ bouts
                 expected_jams_played), 
         })
 
-        total_jams_played = "total jams: {0}".format(self.total_jams)
+        total_jams_played = "total jams: {0}".format(total_jams)
         self.expected_elements.append({
             "name":"Total Jams In Database Display",
             "string":total_jams_played,

@@ -18,12 +18,15 @@ class PlayerTests(TestCase):
         self.assertEqual(expected_repr, str(p))
 
 class JamTests(TestCase):
-    def test_model_can_store_players(self):
+    def test_model_fields_exist(self):
         p1 = Player.objects.create()
         p2 = Player.objects.create()
-        j = Jam.objects.create()
+        bout = factories.BoutFactory()
+        j = Jam.objects.create(bout=bout)
         PlayerToJam.objects.create(player=p1, jam=j)
         PlayerToJam.objects.create(player=p2, jam=j)
+
+
 
 class PlayerToJamTests(TestCase):
     def test_model_has_player_and_Jam_foreign_keys(self):
