@@ -54,6 +54,6 @@ class CompleteBoutFactory(BoutFactory):
     @factory.post_generation
     def add_rostered_players_to_jams(self, create, extracted, **kwargs):
         for player in self.home_roster.players.all():
-            PlayerToJamFactory(player=player)
+            PlayerToJamFactory(player=player, jam__bout=self)
 
 

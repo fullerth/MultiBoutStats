@@ -35,6 +35,12 @@ class TestCompleteBoutFactory(TestCase):
             #Jams cannot happen without at least one player
             self.assertEqual(0, Jam.objects.filter(
                 players__isnull=True).count())
+
+        with self.subTest(msg="Jam not added to the bout"):
+            #Bouts cannot happen without at least one jam
+            self.assertEqual(0, Jam.objects.filter(
+                bout__isnull=True).count())
+
             
 
 
