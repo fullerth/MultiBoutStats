@@ -51,5 +51,9 @@ class BoutFactory(factory.django.DjangoModelFactory):
 class CompleteBoutFactory(BoutFactory):
     home_roster = factory.SubFactory(RosterWithPlayersFactory)
 
-    jam = factory.RelatedFactory(JamFactory, 'bout')
+    @factory.post_generation
+    def add_rostered_players_to_jams(self, create, extracted, **kwargs):
+        for player in self.home_roster.players.all():
+            PlayerToJamFactory(player=player)
+
 

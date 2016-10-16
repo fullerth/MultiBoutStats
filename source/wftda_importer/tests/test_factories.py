@@ -3,7 +3,7 @@ from django.test import TestCase
 from wftda_importer.factories import RosterWithPlayersFactory, PlayerFactory, \
 CompleteBoutFactory
 
-from wftda_importer.models import Jam
+from wftda_importer.models import Jam, Player
 
 class TestRosterWithPlayersFactory(TestCase):
     def test_creates_and_adds_players(self):
@@ -25,8 +25,16 @@ class TestCompleteBoutFactory(TestCase):
         with self.subTest(msg="Home Roster is not set"):
             self.assertNotEqual(bout.home_roster, None)
 
-        self.assertNotEqual(0, Jam.objects.all().count())
+        with self.subTest(msg="Jam object is not created"):
+            self.assertNotEqual(0, Jam.objects.all().count())
 
+        with self.subTest(msg="Players were not created"):
+            self.assertNotEqual(0, Player.objects.all().count())
 
+        with self.subTest(msg="Players not placed in jams"):
+            #Jams cannot happen without at least one player
+            self.assertEqual(0, Jam.objects.filter(
+                players__isnull=True).count())
+            
 
 
