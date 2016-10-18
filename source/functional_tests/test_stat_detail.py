@@ -33,7 +33,8 @@ bouts
         """Ensure that the correct element values show up in the stat detail page for id=2"""
         p2 = self.created_bouts[1].home_roster.players.all()[0]
 
-        total_jams = Jam.objects.all().count()
+        total_jams_available_p2 = Jam.objects.filter(
+                bout__home_roster__players=p2).count()
 
         position = {
             "blocker":PlayerToJam.objects.filter(
@@ -77,13 +78,15 @@ bouts
                 expected_jams_played), 
         })
 
-        total_jams_played = "total jams: {0}".format(total_jams)
+        total_jams_available = "total jams available: {0}".format(
+                total_jams_available_p2)
         self.expected_elements.append({
-            "name":"Total Jams In Database Display",
-            "string":total_jams_played,
+            "name":"Total Jams Available to Player Display",
+            "string":total_jams_available,
             "location":self.browser.find_element_by_id(
-                'id_total_jams').get_attribute('innerHTML'),
-            "message":"'{0}' not found in id_total_jams".format(total_jams_played)
+                'id_total_jams_available').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_total_jams_available".format(
+                total_jams_available)
         })
 
         self.expected_elements.append({

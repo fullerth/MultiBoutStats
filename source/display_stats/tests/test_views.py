@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.test.client import Client
 
 from wftda_importer.models import Player, Jam, PlayerToJam, Bout
-from wftda_importer.factories import RosterWithPlayersFactory
+from wftda_importer.factories import JamFactory, PlayerFactory, \
+    PlayerToJamFactory, RosterWithPlayersFactory, BoutFactory
 
 class StatDisplayPageTest(TestCase):
     def setUp(self):
@@ -44,18 +45,27 @@ class StatDisplayPageTest(TestCase):
         response = c.get(reverse(self.test_url))
         self.assertEqual(expected_jams, response.context['num_jams'])
 
-    def test_stat_page_passes_total_jams_in_context(self):
-        """Ensure total_jams contains the correct total available jams"""
-        expected_jams = 10
+    def test_stat_page_passes_total_jams_available_in_context(self):
+        """Ensure total_jams_available contains the available jams for player"""
+        total_jams = 10
+        available_jams = 5
 
-        p = Player.objects.create()
+        p = PlayerFactory()
+        bout = BoutFactory() 
+        bout.home_roster.players.add(p)
 
-        for i in range(0, expected_jams):
-            j = Jam.objects.create()
-        
+        for i in range(0, total_jams):
+            if(i < available_jams):
+                player = p
+            else:
+                player = None
+            j = JamFactory(bout=bout)
+            PlayerToJamFactory(player=player, jam=j)
+
         c = Client()
         response = c.get(reverse(self.test_url))
-        self.assertEqual(expected_jams, response.context['total_jams'])
+        self.assertEqual(total_jams, 
+                response.context['total_jams_available'])
 
     def test_stat_page_passes_correct_jam_position_counts_in_context(self):
         """Ensure context contains the correct jam positions by the player"""
