@@ -45,9 +45,15 @@ bouts
                 player=p2, position=PlayerToJam.JAMMER).count()
         }
 
+        status = {
+            "lead":PlayerToJam.objects.filter(
+                player=p2, lead_flag=True).count()
+        }
+
         expected_blocker = "blocker jams: {0}".format(position['blocker'])
         expected_pivot = "pivot jams: {0}".format(position['pivot'])
         expected_jammer = "jammer jams: {0}".format(position['jammer'])
+        expected_lead_jammer = "lead jammer: {0}".format(status['lead'])
 
         self.url.append('/{0}'.format(p2.id))
         self.browser.get(''.join(self.url))
@@ -96,6 +102,15 @@ bouts
                 'id_jammer_jams').get_attribute('innerHTML'),
             "message":"'{0}' not found in id_jammer_jams".format(
                 expected_jammer)
+        })
+        
+        self.expected_elements.append({
+            "name":"Lead Jams Display",
+            "string":expected_lead_jammer,
+            "location":self.browser.find_element_by_id(
+                'id_lead_jams').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_lead_jams".format(
+                expected_lead_jammer)
         })
         
         self.expected_elements.append({

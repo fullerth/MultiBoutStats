@@ -27,11 +27,13 @@ class JamTests(TestCase):
         PlayerToJam.objects.create(player=p2, jam=j)
 
 class PlayerToJamTests(TestCase):
-    def test_model_has_player_and_Jam_foreign_keys(self):
+    def test_model_fields_exist(self):
         p = Player.objects.create()
         j = Jam.objects.create()
+        position = PlayerToJam.JAMMER
+        lead_jammer = True
 
-        PlayerToJam(player=p, jam=j)
+        PlayerToJam(player=p, jam=j, position=position, lead_flag=lead_jammer)
 
 class BoutTests(TestCase):
     def test_model_fields_exist(self):

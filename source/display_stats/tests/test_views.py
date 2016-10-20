@@ -118,3 +118,18 @@ class StatDisplayPageTest(TestCase):
         self.assertEqual(expected_bouts, response.context['bouts_played'],
                 msg="Incorrect bouts played in context")
 
+    def test_stat_page_passes_correct_lead_jammer_in_context(self):
+        """Ensure the context contains the correct lead jams of the player"""
+        lead_jams = 5
+        nolead_jams = 10
+        player = PlayerFactory()
+        ptoj_lead = PlayerToJamFactory.create_batch(lead_jams, player=player, 
+                lead_flag=True)
+        ptoj_nolead = PlayerToJamFactory.create_batch(nolead_jams, 
+                player=player, lead_flag=False)
+
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(lead_jams, response.context['lead_jams'],
+                msg="Incorrect number of lead jams in context")
+    

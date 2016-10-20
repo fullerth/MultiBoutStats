@@ -22,6 +22,8 @@ class PlayerToJam(models.Model):
     player = models.ForeignKey('Player', null=True)
     jam = models.ForeignKey('Jam', null=True)
     position = models.CharField(max_length=1, choices=POSITIONS, null=True)
+    lead_flag = models.BooleanField(default=False)
+    
 
 class Bout(models.Model):
     location = models.CharField(max_length=200, null=True)
