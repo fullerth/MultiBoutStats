@@ -27,7 +27,8 @@ bouts
             if 'name' not in test:
                 test['name'] = None
             with self.subTest(msg=test['name']):
-                self.assertIn(test['string'], test['location'], msg=test['message'])
+                self.assertIn(test['string'], test['location'], 
+                        msg=test['message'])
 
     def test_detail_page_elements(self):
         """Ensure that the correct element values show up in the stat detail page for id=2"""
@@ -46,23 +47,33 @@ bouts
         }
 
         status = {
-            "lead":PlayerToJam.objects.filter(
-                player=p2, lead_flag=True).count()
+            "lead":PlayerToJam.objects.filter(player=p2, 
+                lead_flag=True).count(),
+            "no_lead":PlayerToJam.objects.filter(player=p2, 
+                lead_flag=False).count()
         }
 
+        calculated_stats = {
+            "lead_percentage":
+            (100 * status['lead']/position['jammer']) \
+                if position['jammer']!=0 else 0,
+
+        }
+
+        # Create strings to look for in page HTML
         expected_blocker = "blocker jams: {0}".format(position['blocker'])
         expected_pivot = "pivot jams: {0}".format(position['pivot'])
         expected_jammer = "jammer jams: {0}".format(position['jammer'])
         expected_lead_jammer = "lead jammer: {0}".format(status['lead'])
+        expected_lead_percentage = "lead percentage: {0}".format(
+            calculated_stats['lead_percentage'])
+        expected_name = p2.name
+        expected_title_string = "Stats for {0}".format(expected_name)
+        expected_bouts = "bouts: {0}".format(Bout.objects.filter(
+            home_roster__players=p2).count())
 
         self.url.append('/{0}'.format(p2.id))
         self.browser.get(''.join(self.url))
-
-        expected_name = p2.name
-        expected_title_string = "Stats for {0}".format(expected_name)
-
-        expected_bouts = "bouts: {0}".format(Bout.objects.filter(
-            home_roster__players=p2).count())
 
         self.expected_elements.append({
             "name":"Detail Page Title",
@@ -145,6 +156,15 @@ bouts
             "location":self.browser.find_element_by_id(
                 'id_bouts').get_attribute('innerHTML'),
             "message":"'{0}' not found in id_bouts".format(expected_bouts)
+        })
+
+        self.expected_elements.append({
+            "name":"Lead Jammer Percentage Display",
+            "string":expected_lead_percentage,
+            "location":self.browser.find_element_by_id(
+                'id_lead_percentage').get_attribute('innerHTML'),
+            "message":"'{0}' not found in id_lead_percentage".format(
+                expected_lead_percentage)
         })
 
         self.__verify_expected_elements()

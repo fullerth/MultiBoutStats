@@ -132,4 +132,20 @@ class StatDisplayPageTest(TestCase):
         response = c.get(reverse(self.test_url))
         self.assertEqual(lead_jams, response.context['lead_jams'],
                 msg="Incorrect number of lead jams in context")
-    
+
+    def test_stat_page_passes_correct_lead_percentage_in_context(self):
+        """Ensure the context contains the correct lead jammer percentage"""
+        lead_jams = 17
+        nolead_jams = 8
+        player = PlayerFactory()
+        ptoj_lead = PlayerToJamFactory.create_batch(lead_jams, player=player,
+                position=PlayerToJam.JAMMER, lead_flag=True)
+        ptoj_nolead = PlayerToJamFactory.create_batch(nolead_jams,
+                position=PlayerToJam.JAMMER, player=player, lead_flag=False)
+
+        c = Client()
+        response = c.get(reverse(self.test_url))
+        self.assertEqual(100 * lead_jams/(nolead_jams+lead_jams), 
+                response.context['lead_percentage'],
+                msg="Lead Percentage not correct")
+
