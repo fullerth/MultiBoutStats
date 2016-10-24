@@ -56,8 +56,7 @@ bouts
         calculated_stats = {
             "lead_percentage":
             (100 * status['lead']/position['jammer']) \
-                if position['jammer']!=0 else 0,
-
+                if position['jammer'] !=0 else 0,
         }
 
         # Create strings to look for in page HTML
