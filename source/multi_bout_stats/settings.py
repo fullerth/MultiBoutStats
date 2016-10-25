@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wftda_importer',
     'display_stats',
+    'multi_bout_stats',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -101,6 +102,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGIN_REDIRECT_URL = 'display_stats'
 
 
 # Internationalization
