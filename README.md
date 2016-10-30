@@ -4,20 +4,6 @@ Project to display player stats across multiple bouts.
 Currently displaying the number of jams participated in, positions played, total
 jams played by player and total jams in the database.
 
-# Required packages
-### Pyvirtualdisplay
-Pyvirtualdisplay is used to run selenium tests in a virtual window and requires 
-`xvfb`
-
-'''sudo apt-get install xvfb'''
-
-### Chromedriver
-Chromedriver is needed to run selenium tests with chrome. Customize the 
-[chromedriver_cfg.py](source/functional_tests/chromedriver/chromedriver_cfg.py) 
-with the local path to the chromedriver binary. See the 
-[README.md](source/functional_tests/chromedriver/README.md) in chromedriver for
- more info.
-
 # Project Templates
 Both project and app templates for django-admin/manage.py are provided.
 
