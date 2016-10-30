@@ -1,19 +1,17 @@
-from .base import FunctionalTest
+import warnings
+
+from django.core.urlresolvers import reverse
+from django_webtest import WebTest
 
 from wftda_importer import factories
 from wftda_importer.models import Bout, PlayerToJam, Jam
 
-class StatDetailPage(FunctionalTest):
+class StatDetailPage(WebTest):
     """Open up a page and it's got stats for Jill Nye across multiple available
 bouts
     """
-    reset_sequences = True
-
     def setUp(self):
-        self.url_prefix = '/display_stats'
-        self.url = [self.server_url,
-                    self.url_prefix,
-                   ]
+        self.url = [reverse('display_stats'),]
         
         self.created_bouts = factories.CompleteBoutFactory.create_batch(2)
         self.expected_elements = []
@@ -71,13 +69,17 @@ bouts
         expected_bouts = "bouts: {0}".format(Bout.objects.filter(
             home_roster__players=p2).count())
 
-        self.url.append('/{0}'.format(p2.id))
-        self.browser.get(''.join(self.url))
+        self.url.append('{0}/'.format(p2.id))
+        result = self.app.get(''.join(self.url))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            #This causes a Unicode warning, not sure why, nofix for now
+            html = result.html
 
         self.expected_elements.append({
             "name":"Detail Page Title",
             "string":expected_title_string,
-            "location":self.browser.title,
+            "location":html.title,
             "message":
                 "'{0}' not found in browser title for player id {1}".format(
                 expected_title_string, p2.id)
@@ -88,19 +90,18 @@ bouts
         self.expected_elements.append({
             "name":"Jams Played Display",
             "string":expected_jams_played,
-            "location":self.browser.find_element_by_id(
-                'id_played_jams').get_attribute('innerHTML'),
+            "location":html.find(id='id_played_jams').contents[0],
             "message":"'{0}' not found in id_played_jams".format(
                 expected_jams_played), 
         })
+
 
         total_jams_available = "total jams available: {0}".format(
                 total_jams_available_p2)
         self.expected_elements.append({
             "name":"Total Jams Available to Player Display",
             "string":total_jams_available,
-            "location":self.browser.find_element_by_id(
-                'id_total_jams_available').get_attribute('innerHTML'),
+            "location":html.find(id='id_total_jams_available').contents[0],
             "message":"'{0}' not found in id_total_jams_available".format(
                 total_jams_available)
         })
@@ -108,8 +109,7 @@ bouts
         self.expected_elements.append({
             "name":"Jams as Jammer Display",
             "string":expected_jammer,
-            "location":self.browser.find_element_by_id(
-                'id_jammer_jams').get_attribute('innerHTML'),
+            "location":html.find(id='id_jammer_jams').contents[0],
             "message":"'{0}' not found in id_jammer_jams".format(
                 expected_jammer)
         })
@@ -117,8 +117,7 @@ bouts
         self.expected_elements.append({
             "name":"Lead Jams Display",
             "string":expected_lead_jammer,
-            "location":self.browser.find_element_by_id(
-                'id_lead_jams').get_attribute('innerHTML'),
+            "location":html.find(id='id_lead_jams').contents[0],
             "message":"'{0}' not found in id_lead_jams".format(
                 expected_lead_jammer)
         })
@@ -126,17 +125,16 @@ bouts
         self.expected_elements.append({
             "name":"Jams as Blocker Display",
             "string":expected_blocker,
-            "location":self.browser.find_element_by_id(
-                'id_blocker_jams').get_attribute('innerHTML'),
+            "location":html.find(id='id_blocker_jams').contents[0],
             "message":"'{0}' not found in id_blocker_jams".format(
                 expected_blocker)
         })
 
+
         self.expected_elements.append({
             "name":"Jams as Pivot Display",
             "string":expected_pivot,
-            "location":self.browser.find_element_by_id(
-                'id_pivot_jams').get_attribute('innerHTML'),
+            "location":html.find(id='id_pivot_jams').contents[0],
             "message":"'{0}' not found in id_pivot_jams".format(expected_pivot)
 
         })
@@ -144,24 +142,21 @@ bouts
         self.expected_elements.append({
             "name":"Blocker Name Display",
             "string":expected_name,
-            "location":self.browser.find_element_by_id(
-                'id_player_name').get_attribute('innerHTML'),
+            "location":html.find(id='id_player_name').contents[0],
             "message":"'{0}' not found in id_player_name".format(expected_name)
         })
 
         self.expected_elements.append({
             "name":"Bouts Played Display",
             "string":expected_bouts,
-            "location":self.browser.find_element_by_id(
-                'id_bouts').get_attribute('innerHTML'),
+            "location":html.find(id='id_bouts').contents[0],
             "message":"'{0}' not found in id_bouts".format(expected_bouts)
         })
 
         self.expected_elements.append({
             "name":"Lead Jammer Percentage Display",
             "string":expected_lead_percentage,
-            "location":self.browser.find_element_by_id(
-                'id_lead_percentage').get_attribute('innerHTML'),
+            "location":html.find(id='id_lead_percentage').contents[0],
             "message":"'{0}' not found in id_lead_percentage".format(
                 expected_lead_percentage)
         })
