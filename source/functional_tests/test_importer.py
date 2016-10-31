@@ -1,3 +1,5 @@
+import warnings
+
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
@@ -10,20 +12,24 @@ database"""
     def setUp(self):
         self.url_prefix = '/import'
         self.user = User.objects.create(username='foo')
+
+        self.wftda_importer_page = self.app.get(reverse('wftda_importer'), 
+                user=self.user)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.page_html = self.wftda_importer_page.html
+
+
         super().setUp()
 
     def test_landing_page_title(self):
         """Make sure that the correct title is displayed on the landing page"""
         expected_title = "WFTDA Statbook Importer"
-        wftda_importer_page = self.app.get(reverse('wftda_importer'), 
-                user=self.user)
 
-        self.assertIn(expected_title, wftda_importer_page)
+        self.assertIn(expected_title, self.wftda_importer_page)
 
     def test_file_input_exists(self):
         """Make sure that the page contains a file upload input"""
-        wftda_importer = self.app.get(reverse('wftda_importer'),
-                user=self.user)
+        self.assertNotEqual(None, self.page_html.find(id='id_file_input'))
 
-        self.assertIn('id_file_input', wftda_importer)
-               
