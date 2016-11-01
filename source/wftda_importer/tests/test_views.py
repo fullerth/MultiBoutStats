@@ -18,4 +18,12 @@ class ImporterPageTest(TestCase):
         response = c.get(reverse(self.test_url_name), user=self.user)
         self.assertTemplateUsed(response, 'wftda_importer/import.html')
 
+    def test_page_requires_login(self):
+        """Ensure the importer page redirects to the login"""
+        c = Client()
+        response = c.get(reverse(self.test_url_name))
+        
+        self.assertRedirects(response, '{0}?next={1}'.format(
+            reverse('login'), reverse(self.test_url_name)))
+
 
