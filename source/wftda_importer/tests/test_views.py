@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 
+from wftda_importer.forms import WftdaStatBookForm
+
 class ImporterPageTest(TestCase):
     """Unit tests for Importer view"""
 
@@ -26,4 +28,12 @@ class ImporterPageTest(TestCase):
         self.assertRedirects(response, '{0}?next={1}'.format(
             reverse('login'), reverse(self.test_url_name)))
 
+    def test_view_passes_form_in_context(self):
+        """Ensure the view passes the correct Form in the context"""
+        c = Client()
+        c.force_login(self.user)
+
+        response = c.get(reverse(self.test_url_name), user=self.user)
+
+        self.assertEqual(WftdaStatBookForm, type(response.context['form']))
 
