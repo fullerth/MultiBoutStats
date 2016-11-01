@@ -29,7 +29,7 @@ database"""
 
         self.assertIn(expected_title, self.wftda_importer_page)
 
-    def test_file_input_exists(self):
+    def test_file_input_form_exists(self):
         """Make sure that the page contains a file upload input"""
-        self.assertNotEqual(None, self.page_html.find(id='id_file_input'))
-
+        self.assertNotEqual(None, self.page_html.form(id='id_import_form'))
+        self.assertNotEqual(None, self.page_html.input(id='id_file_input'))
