@@ -3,7 +3,8 @@
     <title>WFTDA Statbook Importer</title>
     <body>
         <form id="id_import_form">
-        <input id="id_file_input">File Location</input>
+        {% csrf_token %}
+        {{ form }}
         <input type="submit" value="upload"/>
         </form>
     </body>

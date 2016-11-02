@@ -33,6 +33,6 @@ database"""
         """Make sure that the page contains a file upload input"""
         form_tag = self.page_html.find('form', id='id_import_form')
         self.assertNotEqual(None, form_tag)
-        self.assertNotEqual(None, form_tag.find('input', id='id_file_input'))
+        self.assertNotEqual(None, form_tag.find('input', id='id_stat_book'))
         self.assertNotEqual(None, form_tag.find('input', type='submit', 
             value='upload')) 
