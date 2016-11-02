@@ -32,7 +32,8 @@ database"""
     def test_file_input_form_fields_exist(self):
         """Make sure that the page contains a file upload input"""
         form_tag = self.page_html.find('form', id='id_import_form')
-        self.assertNotEqual(None, form_tag)
-        self.assertNotEqual(None, form_tag.find('input', id='id_stat_book'))
-        self.assertNotEqual(None, form_tag.find('input', type='submit', 
+        self.assertIsNotNone(form_tag)
+        self.assertIsNotNone(form_tag.find('input', id='id_stat_book'))
+        self.assertIsNotNone(form_tag.find('input', type='submit', 
             value='upload')) 
+
